@@ -44,4 +44,6 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     implementation(libs.androidx.lifecycle.runtime.ktx.v287)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.material.icons.extended)
+
 }
