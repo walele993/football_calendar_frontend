@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.walele.footballcalendar"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.material3)
     implementation(libs.ui)
@@ -45,5 +46,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx.v287)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.material.icons.extended)
-
+    implementation(libs.accompanist.pager)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.runtime)
 }
