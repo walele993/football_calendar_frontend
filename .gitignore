@@ -1,0 +1,43 @@
+# Android Studio & IntelliJ
+*.iml
+.idea/
+*.ipr
+*.iws
+
+# Build output
+/build/
+*/build/
+
+# Local configuration
+local.properties
+.gradle/
+.cxx/
+.externalNativeBuild/
+
+# macOS
+.DS_Store
+
+# Log files
+*.log
+
+# NDK
+obj/
+
+# Captures (screenshot/video in Android Studio)
+captures/
+
+# Signing files
+*.jks
+*.keystore
+
+# Crashlytics/Firebase
+fabric.properties
+google-services.json
+
+# Misc
+*.apk
+*.ap_
+
+# Windows
+Thumbs.db
+desktop.ini
