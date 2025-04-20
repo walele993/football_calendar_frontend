@@ -49,8 +49,16 @@ fun HomeScreen() {
     val pagerState = rememberPagerState(initialPage = initialPage, pageCount = { monthYearList.size })
     val coroutineScope = rememberCoroutineScope()
 
+    // State for displaying the current month and year in the TopBar
+    val currentMonthYear = remember { mutableStateOf(monthYearList[initialPage]) }
+
+    // Observer for the page change in the calendar
+    LaunchedEffect(pagerState.currentPage) {
+        currentMonthYear.value = monthYearList[pagerState.currentPage]
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
-        TopBar()
+        TopBar(currentMonthYear.value)
 
         // Calendar (top half)
         Column(modifier = Modifier.weight(1f)) {
@@ -95,24 +103,23 @@ fun HomeScreen() {
 }
 
 @Composable
-fun TopBar() {
+fun TopBar(currentMonthYear: YearMonth) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween, // Changes to space between to put filter on the right
+        horizontalArrangement = Arrangement.SpaceBetween, // Space between month/year and filter
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val selectedDate = LocalDate.now() // Placeholder for selected date in the top bar
-        val formattedMonth = selectedDate.month.name.lowercase().replaceFirstChar { it.uppercase() }
+        val formattedMonth = currentMonthYear.month.name.lowercase().replaceFirstChar { it.uppercase() }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "$formattedMonth", // Month only, no year here
+                text = "$formattedMonth", // Month only
                 style = MaterialTheme.typography.headlineSmall.copy(color = Color(0xFF1F1F1F)), // Dark month color
             )
             Spacer(modifier = Modifier.width(4.dp)) // Adds some space between month and year
             Text(
-                text = "${selectedDate.year}",
+                text = "${currentMonthYear.year}",
                 style = MaterialTheme.typography.headlineSmall.copy(color = Color(0xFFB0B0B0)), // Lighter year color (gray)
             )
         }
