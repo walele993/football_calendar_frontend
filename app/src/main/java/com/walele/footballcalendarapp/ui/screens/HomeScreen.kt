@@ -35,7 +35,10 @@ fun HomeScreen() {
         currentMonthYear.value = monthYearList[pagerState.currentPage]
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(WindowInsets.systemBars.asPaddingValues())
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopBar(currentMonthYear.value)
 
@@ -64,3 +67,4 @@ fun HomeScreen() {
         }
     }
 }
+

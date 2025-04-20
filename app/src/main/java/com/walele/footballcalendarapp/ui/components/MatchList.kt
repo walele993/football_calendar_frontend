@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import com.walele.footballcalendarapp.data.Match
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun MatchList(matches: List<Match>, selectedDate: LocalDate) {
@@ -32,10 +33,19 @@ fun MatchList(matches: List<Match>, selectedDate: LocalDate) {
         modifier = Modifier.padding(bottom = 8.dp)
     )
 
-    LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
-        items(matches.size) { index ->
-            MatchItem(matches[index])
-            Spacer(modifier = Modifier.height(8.dp))
+    if (matches.isEmpty()) {
+        Text(
+            text = "No match today",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(16.dp),
+            color = Color.Gray
+        )
+    } else {
+        LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
+            items(matches.size) { index ->
+                MatchItem(matches[index])
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
     }
 }
