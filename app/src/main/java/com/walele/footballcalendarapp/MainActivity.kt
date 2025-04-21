@@ -9,10 +9,13 @@ import androidx.activity.compose.setContent
 import androidx.core.view.WindowInsetsControllerCompat
 import com.walele.footballcalendarapp.ui.screens.HomeScreen
 import com.walele.footballcalendarapp.ui.theme.FootballCalendarAppTheme
+import androidx.core.view.WindowCompat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         // L'inizializzazione della vista verrà fatta solo al ritorno nel ciclo di vita dell'attività
         setContent {

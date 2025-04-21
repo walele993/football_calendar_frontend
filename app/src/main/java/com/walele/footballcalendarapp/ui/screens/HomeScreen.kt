@@ -3,14 +3,15 @@ package com.walele.footballcalendarapp.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.walele.footballcalendarapp.components.CalendarView
-import com.walele.footballcalendarapp.components.MatchList
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.ui.platform.LocalDensity
+import com.walele.footballcalendarapp.ui.components.CalendarView
+import com.walele.footballcalendarapp.ui.components.MatchList
 import com.walele.footballcalendarapp.components.TopBar
-import com.walele.footballcalendarapp.data.Match
 import com.walele.footballcalendarapp.data.getMatchesForDate
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -31,13 +32,21 @@ fun HomeScreen() {
     val coroutineScope = rememberCoroutineScope()
     val currentMonthYear = remember { mutableStateOf(monthYearList[initialPage]) }
 
+    // Calcolo padding per la barra inferiore
+    val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
     LaunchedEffect(pagerState.currentPage) {
         currentMonthYear.value = monthYearList[pagerState.currentPage]
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(WindowInsets.systemBars.asPaddingValues())
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                WindowInsets.systemBars
+                    .only(WindowInsetsSides.Top) // solo padding superiore
+                    .asPaddingValues()
+            )
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopBar(currentMonthYear.value)
@@ -61,10 +70,14 @@ fun HomeScreen() {
                 }
             }
 
-            Column(modifier = Modifier.weight(1f).padding(16.dp)) {
-                MatchList(matches = getMatchesForDate(selectedDate.value), selectedDate = selectedDate.value)
+            // MatchList con bottomPadding passato correttamente
+            Column(modifier = Modifier.weight(1f)) {
+                MatchList(
+                    matches = getMatchesForDate(selectedDate.value),
+                    selectedDate = selectedDate.value,
+                    bottomPadding = bottomPadding // Passiamo il bottomPadding qui
+                )
             }
         }
     }
 }
-

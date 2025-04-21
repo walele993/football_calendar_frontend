@@ -1,4 +1,4 @@
-package com.walele.footballcalendarapp.components
+package com.walele.footballcalendarapp.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
