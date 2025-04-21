@@ -22,10 +22,18 @@ fun MatchList(
     val listState = rememberLazyListState()
     val today = LocalDate.now()
     val label = when (selectedDate) {
-        today -> "Today"
-        today.plusDays(1) -> "Tomorrow"
-        today.minusDays(1) -> "Yesterday"
-        else -> selectedDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
+        today -> Pair("Today", today.format(DateTimeFormatter.ofPattern("d MMMM")))
+        today.plusDays(1) -> Pair("Tomorrow", today.plusDays(1).format(DateTimeFormatter.ofPattern("d MMMM")))
+        today.minusDays(1) -> Pair("Yesterday", today.minusDays(1).format(DateTimeFormatter.ofPattern("d MMMM")))
+        else -> {
+            // Formattazione personalizzata per il giorno della settimana e la data
+            val dayOfWeek = selectedDate.dayOfWeek.name.lowercase().replaceFirstChar { it.titlecase() }
+            val dayOfMonth = selectedDate.dayOfMonth
+            val month = selectedDate.month.name.lowercase().replaceFirstChar { it.titlecase() }
+
+            // Restituiamo il giorno della settimana e il giorno del mese separati per poter applicare colori diversi
+            Pair(dayOfWeek, "$dayOfMonth $month")
+        }
     }
 
     LaunchedEffect(selectedDate) {
@@ -33,11 +41,24 @@ fun MatchList(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
-        )
+        if (label is Pair<*, *>) {
+            val dayOfWeekText = label.first as String
+            val dateText = label.second as String
+
+            Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
+                Text(
+                    text = dayOfWeekText,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color(0xFF1F1F1F),
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = dateText,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color(0xFFB0B0B0)
+                )
+            }
+        }
 
         if (matches.isEmpty()) {
             Text(

@@ -8,7 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.ui.input.pointer.consumePositionChange
 import com.walele.footballcalendarapp.ui.components.CalendarView
 import com.walele.footballcalendarapp.ui.components.MatchList
 import com.walele.footballcalendarapp.components.TopBar
@@ -19,7 +22,10 @@ import java.time.YearMonth
 
 @Composable
 fun HomeScreen() {
+    // Stato condiviso per la data selezionata
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
+
+    // Generazione lista mesi
     val startYear = 2020
     val endYear = 2026
     val monthYearList = remember {
@@ -27,16 +33,38 @@ fun HomeScreen() {
             (1..12).map { month -> YearMonth.of(year, month) }
         }
     }
-    val initialPage = monthYearList.indexOf(YearMonth.of(selectedDate.value.year, selectedDate.value.month))
-    val pagerState = rememberPagerState(initialPage = initialPage, pageCount = { monthYearList.size })
+    val initialMonthPage = monthYearList.indexOf(YearMonth.from(selectedDate.value))
+    val monthPagerState = rememberPagerState(
+        initialPage = initialMonthPage,
+        pageCount = { monthYearList.size }
+    )
+    val currentMonthYear = remember { mutableStateOf(monthYearList[initialMonthPage]) }
     val coroutineScope = rememberCoroutineScope()
-    val currentMonthYear = remember { mutableStateOf(monthYearList[initialPage]) }
 
-    // Calcolo padding per la barra inferiore
-    val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    // Calcolo padding inferiore
+    val bottomPadding = WindowInsets.navigationBars
+        .asPaddingValues()
+        .calculateBottomPadding()
 
-    LaunchedEffect(pagerState.currentPage) {
-        currentMonthYear.value = monthYearList[pagerState.currentPage]
+    // Sincronizzazione: cambio mese -> aggiorno data
+    LaunchedEffect(monthPagerState.currentPage) {
+        currentMonthYear.value = monthYearList[monthPagerState.currentPage]
+        val ym = monthYearList[monthPagerState.currentPage]
+        val newDate = if (YearMonth.from(selectedDate.value) == ym)
+            selectedDate.value
+        else
+            ym.atDay(1)
+        selectedDate.value = newDate
+    }
+
+    // Sincronizzazione: cambio data -> aggiorno pager mesi
+    LaunchedEffect(selectedDate.value) {
+        val newMonthIdx = monthYearList.indexOf(YearMonth.from(selectedDate.value))
+        if (newMonthIdx != monthPagerState.currentPage) {
+            coroutineScope.launch {
+                monthPagerState.animateScrollToPage(newMonthIdx)
+            }
+        }
     }
 
     Box(
@@ -44,38 +72,71 @@ fun HomeScreen() {
             .fillMaxSize()
             .padding(
                 WindowInsets.systemBars
-                    .only(WindowInsetsSides.Top) // solo padding superiore
+                    .only(WindowInsetsSides.Top)
                     .asPaddingValues()
             )
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        // Column che si adatta al contenuto
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            // Barra superiore con mese/anno
             TopBar(currentMonthYear.value)
 
-            Column(modifier = Modifier.weight(1f)) {
-                HorizontalPager(state = pagerState, modifier = Modifier.fillMaxWidth()) { page ->
-                    val yearMonth = monthYearList[page]
-                    CalendarView(
-                        yearMonth = yearMonth,
-                        selectedDate = selectedDate.value,
-                        onDateSelected = { date, isCurrentMonth ->
-                            val newMonthIndex = monthYearList.indexOf(YearMonth.of(date.year, date.month))
-                            coroutineScope.launch {
-                                if (!isCurrentMonth) {
-                                    pagerState.animateScrollToPage(newMonthIndex)
-                                }
-                                selectedDate.value = date
+            // Pager mesi (calendario) con altezza dinamica
+            HorizontalPager(
+                state = monthPagerState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) { page ->
+                CalendarView(
+                    yearMonth = monthYearList[page],
+                    selectedDate = selectedDate.value,
+                    onDateSelected = { date, isCurrentMonth ->
+                        coroutineScope.launch {
+                            selectedDate.value = date
+                            if (!isCurrentMonth) {
+                                val mi = monthYearList.indexOf(YearMonth.from(date))
+                                monthPagerState.animateScrollToPage(mi)
                             }
                         }
-                    )
-                }
+                    }
+                )
             }
 
-            // MatchList con bottomPadding passato correttamente
-            Column(modifier = Modifier.weight(1f)) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // MatchList con swipe orizzontale per cambiare giorno e altezza wrap
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .pointerInput(selectedDate.value) {
+                        var totalDragX = 0f
+                        detectHorizontalDragGestures(
+                            onHorizontalDrag = { change, dragAmount ->
+                                totalDragX += dragAmount
+                                change.consumePositionChange()
+                            },
+                            onDragEnd = {
+                                val threshold = 100f
+                                if (totalDragX > threshold) {
+                                    selectedDate.value = selectedDate.value.minusDays(1)
+                                } else if (totalDragX < -threshold) {
+                                    selectedDate.value = selectedDate.value.plusDays(1)
+                                }
+                                totalDragX = 0f
+                            }
+                        )
+                    }
+            ) {
                 MatchList(
                     matches = getMatchesForDate(selectedDate.value),
                     selectedDate = selectedDate.value,
-                    bottomPadding = bottomPadding // Passiamo il bottomPadding qui
+                    bottomPadding = bottomPadding
                 )
             }
         }
