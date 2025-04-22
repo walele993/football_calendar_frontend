@@ -22,10 +22,8 @@ import java.time.YearMonth
 
 @Composable
 fun HomeScreen() {
-    // Stato condiviso per la data selezionata
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
 
-    // Generazione lista mesi
     val startYear = 2020
     val endYear = 2026
     val monthYearList = remember {
@@ -33,31 +31,34 @@ fun HomeScreen() {
             (1..12).map { month -> YearMonth.of(year, month) }
         }
     }
+
     val initialMonthPage = monthYearList.indexOf(YearMonth.from(selectedDate.value))
     val monthPagerState = rememberPagerState(
         initialPage = initialMonthPage,
         pageCount = { monthYearList.size }
     )
+
     val currentMonthYear = remember { mutableStateOf(monthYearList[initialMonthPage]) }
     val coroutineScope = rememberCoroutineScope()
 
-    // Calcolo padding inferiore
     val bottomPadding = WindowInsets.navigationBars
         .asPaddingValues()
         .calculateBottomPadding()
 
-    // Sincronizzazione: cambio mese -> aggiorno data
+    // Stato per alternare vista mensile / annuale
+    val isYearlyView = remember { mutableStateOf(false) }
+
+    // Sync pager -> data
     LaunchedEffect(monthPagerState.currentPage) {
         currentMonthYear.value = monthYearList[monthPagerState.currentPage]
         val ym = monthYearList[monthPagerState.currentPage]
         val newDate = if (YearMonth.from(selectedDate.value) == ym)
             selectedDate.value
-        else
-            ym.atDay(1)
+        else ym.atDay(1)
         selectedDate.value = newDate
     }
 
-    // Sincronizzazione: cambio data -> aggiorno pager mesi
+    // Sync data -> pager
     LaunchedEffect(selectedDate.value) {
         val newMonthIdx = monthYearList.indexOf(YearMonth.from(selectedDate.value))
         if (newMonthIdx != monthPagerState.currentPage) {
@@ -76,40 +77,60 @@ fun HomeScreen() {
                     .asPaddingValues()
             )
     ) {
-        // Column che si adatta al contenuto
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
-            // Barra superiore con mese/anno
-            TopBar(currentMonthYear.value)
+            TopBar(
+                currentMonthYear = currentMonthYear.value,
+                onViewToggle = { isYearlyView.value = !isYearlyView.value }
+            )
 
-            // Pager mesi (calendario) con altezza dinamica
-            HorizontalPager(
-                state = monthPagerState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ) { page ->
-                CalendarView(
-                    yearMonth = monthYearList[page],
-                    selectedDate = selectedDate.value,
-                    onDateSelected = { date, isCurrentMonth ->
-                        coroutineScope.launch {
+            AnimatedContent(
+                targetState = isYearlyView.value,
+                transitionSpec = {
+                    (fadeIn() + scaleIn(initialScale = 0.9f)) togetherWith
+                            (fadeOut() + scaleOut(targetScale = 0.9f))
+                },
+                label = "CalendarSwitch"
+            ) { showYear ->
+                if (showYear) {
+                    YearlyCalendarView(
+                        selectedDate = selectedDate.value,
+                        onDateSelected = { date, _ ->
                             selectedDate.value = date
-                            if (!isCurrentMonth) {
-                                val mi = monthYearList.indexOf(YearMonth.from(date))
-                                monthPagerState.animateScrollToPage(mi)
+                            isYearlyView.value = false
+                        },
+                        startYear = startYear,
+                        endYear = endYear
+                    )
+                } else {
+                    HorizontalPager(
+                        state = monthPagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                    ) { page ->
+                        CalendarView(
+                            yearMonth = monthYearList[page],
+                            selectedDate = selectedDate.value,
+                            onDateSelected = { date, isCurrentMonth ->
+                                coroutineScope.launch {
+                                    selectedDate.value = date
+                                    if (!isCurrentMonth) {
+                                        val mi = monthYearList.indexOf(YearMonth.from(date))
+                                        monthPagerState.animateScrollToPage(mi)
+                                    }
+                                }
                             }
-                        }
+                        )
                     }
-                )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // MatchList con swipe orizzontale per cambiare giorno e altezza wrap
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -142,3 +163,4 @@ fun HomeScreen() {
         }
     }
 }
+

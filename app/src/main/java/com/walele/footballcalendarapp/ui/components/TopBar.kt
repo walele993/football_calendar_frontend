@@ -12,7 +12,10 @@ import androidx.compose.ui.Alignment
 import java.time.YearMonth
 
 @Composable
-fun TopBar(currentMonthYear: YearMonth) {
+fun TopBar(
+    currentMonthYear: YearMonth,
+    onViewToggle: () -> Unit,  // Aggiungiamo il callback per cambiare la vista
+) {
     val formattedMonth = currentMonthYear.month.name.lowercase().replaceFirstChar { it.uppercase() }
 
     Row(
@@ -31,8 +34,8 @@ fun TopBar(currentMonthYear: YearMonth) {
                 style = MaterialTheme.typography.headlineSmall.copy(color = Color(0xFFB0B0B0)),
             )
         }
-        IconButton(onClick = { /* TODO */ }) {
-            Icon(Icons.Default.FilterList, contentDescription = "Filter", tint = Color.Black)
+        IconButton(onClick = onViewToggle) {
+            Icon(Icons.Default.FilterList, contentDescription = "Toggle View", tint = Color.Black)
         }
     }
 }
