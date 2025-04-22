@@ -20,10 +20,13 @@ import java.util.*
 
 @Composable
 fun YearlyCalendarView(
-    year: Int,
+    startYear: Int = 2020,
+    endYear: Int = 2030,
     selectedDate: LocalDate,
-    onMonthSelected: (YearMonth) -> Unit
+    onMonthSelected: (YearMonth) -> Unit,
+    onDateSelected: (LocalDate, Boolean) -> Unit,
 ) {
+    val year = selectedDate.year
     val months = (1..12).map { YearMonth.of(year, it) }
 
     LazyVerticalGrid(
@@ -45,7 +48,7 @@ fun YearlyCalendarView(
                     text = ym.month.getDisplayName(TextStyle.SHORT, Locale.getDefault()).uppercase(),
                     style = MaterialTheme.typography.labelMedium
                 )
-                MiniCalendarGrid(ym, selectedDate)
+                MiniCalendarGrid(ym, selectedDate, onDateSelected)
             }
         }
     }
@@ -54,7 +57,8 @@ fun YearlyCalendarView(
 @Composable
 private fun MiniCalendarGrid(
     yearMonth: YearMonth,
-    selectedDate: LocalDate
+    selectedDate: LocalDate,
+    onDateSelected: (LocalDate, Boolean) -> Unit
 ) {
     val today = LocalDate.now()
     val firstDayOfMonth = yearMonth.atDay(1)
@@ -87,14 +91,15 @@ private fun MiniCalendarGrid(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .aspectRatio(1f),
+                            .aspectRatio(1f)
+                            .clickable { onDateSelected(date, isCurrentMonth)},
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = date.dayOfMonth.toString(),
                             style = MaterialTheme.typography.labelSmall,
                             color = when {
-                                isToday -> Color(0xFFFF5722)
+                                isToday -> Color(0xFFFF5722) // Colore per oggi
                                 isCurrentMonth -> Color.Black
                                 else -> Color.Gray
                             }

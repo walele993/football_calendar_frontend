@@ -49,4 +49,5 @@ dependencies {
     implementation(libs.accompanist.pager)
     implementation(libs.compose.foundation)
     implementation(libs.compose.runtime)
+    implementation(libs.androidx.animation)
 }

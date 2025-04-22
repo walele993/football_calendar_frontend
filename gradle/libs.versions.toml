@@ -18,10 +18,13 @@ uiToolingPreview = "1.7.8"
 accompanistPager = "0.26.5-rc"
 compose_foundation = "1.7.8"
 compose_runtime = "1.7.8"
+compose-animation = "1.7.8"
 
 [libraries]
 #noinspection SimilarGradleDependency
 androidx-activity-compose-v1101 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
+#noinspection SimilarGradleDependency
+androidx-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "compose-animation" }
 #noinspection SimilarGradleDependency
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 #noinspection SimilarGradleDependency
@@ -52,6 +55,7 @@ material-icons-extended = { group = "androidx.compose.material", name = "materia
 accompanist-pager = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanistPager" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose_foundation" }
 compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose_runtime" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

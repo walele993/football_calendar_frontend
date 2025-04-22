@@ -12,13 +12,21 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.ui.input.pointer.consumePositionChange
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
+import com.walele.footballcalendarapp.ui.components.YearlyCalendarView
 import com.walele.footballcalendarapp.ui.components.CalendarView
 import com.walele.footballcalendarapp.ui.components.MatchList
-import com.walele.footballcalendarapp.components.TopBar
+import com.walele.footballcalendarapp.ui.components.TopBar
 import com.walele.footballcalendarapp.data.getMatchesForDate
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.Month
 
 @Composable
 fun HomeScreen() {
@@ -32,10 +40,16 @@ fun HomeScreen() {
         }
     }
 
+    val yearList = remember { (startYear..endYear).toList() } // Lista di anni
     val initialMonthPage = monthYearList.indexOf(YearMonth.from(selectedDate.value))
+    val initialYearPage = yearList.indexOf(selectedDate.value.year) // Indice iniziale della yearly view
     val monthPagerState = rememberPagerState(
         initialPage = initialMonthPage,
         pageCount = { monthYearList.size }
+    )
+    val yearPagerState = rememberPagerState(
+        initialPage = initialYearPage,
+        pageCount = { yearList.size }
     )
 
     val currentMonthYear = remember { mutableStateOf(monthYearList[initialMonthPage]) }
@@ -48,7 +62,7 @@ fun HomeScreen() {
     // Stato per alternare vista mensile / annuale
     val isYearlyView = remember { mutableStateOf(false) }
 
-    // Sync pager -> data
+    // Sync pager -> data per la vista mensile
     LaunchedEffect(monthPagerState.currentPage) {
         currentMonthYear.value = monthYearList[monthPagerState.currentPage]
         val ym = monthYearList[monthPagerState.currentPage]
@@ -56,6 +70,12 @@ fun HomeScreen() {
             selectedDate.value
         else ym.atDay(1)
         selectedDate.value = newDate
+    }
+
+    // Sync pager -> data per la vista annuale
+    LaunchedEffect(yearPagerState.currentPage) {
+        val selectedYear = yearList[yearPagerState.currentPage]
+        selectedDate.value = LocalDate.of(selectedYear, selectedDate.value.monthValue, selectedDate.value.dayOfMonth)
     }
 
     // Sync data -> pager
@@ -82,9 +102,16 @@ fun HomeScreen() {
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
+            // Top bar con visualizzazione dell'anno solo nella yearly view
             TopBar(
-                currentMonthYear = currentMonthYear.value,
-                onViewToggle = { isYearlyView.value = !isYearlyView.value }
+                currentMonthYear = if (isYearlyView.value) {
+                    YearMonth.of(yearList[yearPagerState.currentPage], 1) // Mostra solo l'anno
+                } else {
+                    currentMonthYear.value // Mostra mese e anno
+                },
+                isYearlyView = isYearlyView.value,  // Passa lo stato isYearlyView
+                onViewToggle = { isYearlyView.value = !isYearlyView.value },  // Cambia la vista
+                onMonthClick = { isYearlyView.value = true } // Vai alla vista annuale
             )
 
             AnimatedContent(
@@ -96,15 +123,31 @@ fun HomeScreen() {
                 label = "CalendarSwitch"
             ) { showYear ->
                 if (showYear) {
-                    YearlyCalendarView(
-                        selectedDate = selectedDate.value,
-                        onDateSelected = { date, _ ->
-                            selectedDate.value = date
-                            isYearlyView.value = false
-                        },
-                        startYear = startYear,
-                        endYear = endYear
-                    )
+                    HorizontalPager(
+                        state = yearPagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                    ) { page ->
+                        YearlyCalendarView(
+                            selectedDate = selectedDate.value,
+                            onMonthSelected = { selectedYearMonth ->
+                                val currentYear = yearList[yearPagerState.currentPage]
+                                selectedDate.value = LocalDate.of(
+                                    currentYear,
+                                    selectedYearMonth.monthValue,  // Use monthValue (Int)
+                                    1
+                                )
+                                isYearlyView.value = false
+                            },
+                            onDateSelected = { date, _ ->
+                                selectedDate.value = date
+                                isYearlyView.value = false
+                            },
+                            startYear = startYear,
+                            endYear = endYear
+                        )
+                    }
                 } else {
                     HorizontalPager(
                         state = monthPagerState,
@@ -163,4 +206,3 @@ fun HomeScreen() {
         }
     }
 }
-
