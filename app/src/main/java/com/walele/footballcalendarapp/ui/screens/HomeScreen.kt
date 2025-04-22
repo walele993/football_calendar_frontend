@@ -22,15 +22,17 @@ import com.walele.footballcalendarapp.ui.components.YearlyCalendarView
 import com.walele.footballcalendarapp.ui.components.CalendarView
 import com.walele.footballcalendarapp.ui.components.MatchList
 import com.walele.footballcalendarapp.ui.components.TopBar
-import com.walele.footballcalendarapp.data.getMatchesForDate
+import com.walele.footballcalendarapp.data.Match
+import com.walele.footballcalendarapp.data.MatchRepository
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.Month
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(matchRepository: MatchRepository) {
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
+    val matches = remember { mutableStateOf<List<Match>>(emptyList()) }
 
     val startYear = 2020
     val endYear = 2026
@@ -86,6 +88,10 @@ fun HomeScreen() {
                 monthPagerState.animateScrollToPage(newMonthIdx)
             }
         }
+
+        // Carica i match per la data selezionata
+        val matchesForSelectedDate = matchRepository.getMatches(date = selectedDate.value.toString())
+        matches.value = matchesForSelectedDate
     }
 
     Box(
@@ -198,7 +204,7 @@ fun HomeScreen() {
                     }
             ) {
                 MatchList(
-                    matches = getMatchesForDate(selectedDate.value),
+                    matches = matches.value,
                     selectedDate = selectedDate.value,
                     bottomPadding = bottomPadding
                 )

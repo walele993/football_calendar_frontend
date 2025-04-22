@@ -75,7 +75,7 @@ fun MatchList(
                     .padding(horizontal = 16.dp)
             ) {
                 items(matches.size) { index ->
-                    MatchItem(matches[index])
+                    MatchItemCard(matches[index])
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
@@ -89,20 +89,30 @@ fun MatchList(
 }
 
 @Composable
-fun MatchItem(match: Match) {
+fun MatchItemCard(match: Match) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
+            // Visualizziamo la data della partita, la lega e il punteggio
             Text(
-                text = "${match.time}  •  ${match.league}",
+                text = "${match.date}  •  ${match.league}",
                 style = MaterialTheme.typography.labelMedium
             )
             Text(
-                text = "${match.home} vs ${match.away}",
+                text = "${match.homeTeam} vs ${match.awayTeam}",
                 style = MaterialTheme.typography.bodyLarge
             )
+            match.scoreHome?.let { scoreHome ->
+                match.scoreAway?.let { scoreAway ->
+                    Text(
+                        text = "Score: $scoreHome - $scoreAway",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFFB0B0B0)
+                    )
+                }
+            }
         }
     }
 }

@@ -50,4 +50,10 @@ dependencies {
     implementation(libs.compose.foundation)
     implementation(libs.compose.runtime)
     implementation(libs.androidx.animation)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.gsonConverter)
+
 }
