@@ -10,17 +10,34 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.walele.footballcalendarapp.ui.screens.HomeScreen
 import com.walele.footballcalendarapp.ui.theme.FootballCalendarAppTheme
 import androidx.core.view.WindowCompat
+import com.walele.footballcalendarapp.network.ApiService
+import com.walele.footballcalendarapp.data.MatchRepository
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
+    private lateinit var matchRepository: MatchRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Inizializzazione dell'API
+        val apiService = Retrofit.Builder()
+            .baseUrl("https://yourapiurl.com/")  // Usa l'URL della tua API
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiService::class.java)
+
+        // Crea MatchRepository con l'ApiService
+        matchRepository = MatchRepository(apiService)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         // L'inizializzazione della vista verrà fatta solo al ritorno nel ciclo di vita dell'attività
         setContent {
             FootballCalendarAppTheme {
-                HomeScreen()
+                // Passa matchRepository alla HomeScreen
+                HomeScreen(matchRepository = matchRepository)
             }
         }
     }
