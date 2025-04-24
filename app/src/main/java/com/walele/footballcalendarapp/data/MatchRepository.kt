@@ -1,5 +1,6 @@
 package com.walele.footballcalendarapp.data
 
+import android.util.Log
 import com.walele.footballcalendarapp.network.ApiService
 import com.walele.footballcalendarapp.network.models.MatchResponseDto
 import com.walele.footballcalendarapp.network.models.MatchDto
@@ -8,19 +9,28 @@ import kotlinx.coroutines.withContext
 
 class MatchRepository(private val apiService: ApiService) {
 
-    // Recupera tutti i match, con possibilità di filtrare per data
     suspend fun getMatches(date: String? = null, startDate: String? = null, endDate: String? = null): List<Match> {
         return withContext(Dispatchers.IO) {
-            // Chiamata all'API per ottenere i dati, con eventuali parametri di filtro
-            val response: MatchResponseDto = apiService.getMatches(
-                date = date,
-                startDate = startDate,
-                endDate = endDate
-            )
+            try {
+                // Log prima della chiamata API
+                Log.d("MatchRepository", "Fetching matches with date: $date, startDate: $startDate, endDate: $endDate")
 
-            // Mappa la risposta dell'API ai modelli locali
-            response.results.map { matchDto ->
-                matchDto.toMatch()
+                val response: MatchResponseDto = apiService.getMatches(
+                    date = date,
+                    startDate = startDate,
+                    endDate = endDate
+                )
+
+                // Log della risposta API
+                Log.d("MatchRepository", "Fetched matches: ${response.results.size} matches found")
+
+                return@withContext response.results.map { matchDto ->
+                    matchDto.toMatch()
+                }
+            } catch (e: Exception) {
+                // Log dell'errore
+                Log.e("MatchRepository", "Error fetching matches: ${e.message}", e)
+                return@withContext emptyList<Match>()
             }
         }
     }

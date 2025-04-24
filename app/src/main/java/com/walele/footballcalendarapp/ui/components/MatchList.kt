@@ -1,5 +1,6 @@
 package com.walele.footballcalendarapp.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -17,21 +18,22 @@ import java.time.format.DateTimeFormatter
 fun MatchList(
     matches: List<Match>,
     selectedDate: LocalDate,
-    bottomPadding: Dp // Aggiungiamo il parametro bottomPadding qui
+    bottomPadding: Dp
 ) {
     val listState = rememberLazyListState()
     val today = LocalDate.now()
+
+    // Log quando il composable viene richiamato
+    Log.d("MatchList", "Rendering match list for date: $selectedDate")
+
     val label = when (selectedDate) {
         today -> Pair("Today", today.format(DateTimeFormatter.ofPattern("d MMMM")))
         today.plusDays(1) -> Pair("Tomorrow", today.plusDays(1).format(DateTimeFormatter.ofPattern("d MMMM")))
         today.minusDays(1) -> Pair("Yesterday", today.minusDays(1).format(DateTimeFormatter.ofPattern("d MMMM")))
         else -> {
-            // Formattazione personalizzata per il giorno della settimana e la data
             val dayOfWeek = selectedDate.dayOfWeek.name.lowercase().replaceFirstChar { it.titlecase() }
             val dayOfMonth = selectedDate.dayOfMonth
             val month = selectedDate.month.name.lowercase().replaceFirstChar { it.titlecase() }
-
-            // Restituiamo il giorno della settimana e il giorno del mese separati per poter applicare colori diversi
             Pair(dayOfWeek, "$dayOfMonth $month")
         }
     }
@@ -61,6 +63,8 @@ fun MatchList(
         }
 
         if (matches.isEmpty()) {
+            // Log quando non ci sono partite
+            Log.d("MatchList", "No matches for selected date")
             Text(
                 text = "No match today",
                 style = MaterialTheme.typography.bodyMedium,
@@ -80,13 +84,14 @@ fun MatchList(
                 }
 
                 item {
-                    // Aggiungiamo un Spacer extra per lo spazio cuscinetto
+                    // Aggiungi uno spacer extra per il padding
                     Spacer(modifier = Modifier.height(bottomPadding))
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun MatchItemCard(match: Match) {

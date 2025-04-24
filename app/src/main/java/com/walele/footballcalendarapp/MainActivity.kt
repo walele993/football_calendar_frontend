@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
 
         // Inizializzazione dell'API
         val apiService = Retrofit.Builder()
-            .baseUrl("https://yourapiurl.com/")  // Usa l'URL della tua API
+            .baseUrl("https://football-calendar-backend.vercel.app/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
