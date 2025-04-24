@@ -102,11 +102,11 @@ fun MatchItemCard(match: Match) {
         Column(modifier = Modifier.padding(16.dp)) {
             // Visualizziamo la data della partita, la lega e il punteggio
             Text(
-                text = "${match.date}  •  ${match.league}",
+                text = "${match.date}  •  ${match.league.name}",
                 style = MaterialTheme.typography.labelMedium
             )
             Text(
-                text = "${match.homeTeam} vs ${match.awayTeam}",
+                text = "${match.homeTeam.name} vs ${match.awayTeam.name}",
                 style = MaterialTheme.typography.bodyLarge
             )
             match.scoreHome?.let { scoreHome ->
