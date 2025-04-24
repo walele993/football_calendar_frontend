@@ -34,6 +34,28 @@ class MatchRepository(private val apiService: ApiService) {
             }
         }
     }
+
+    // Nuovo metodo per scaricare tutte le partite di un mese, gestendo la paginazione
+    suspend fun getMatchesForMonth(startDate: String, endDate: String): List<Match> {
+        return withContext(Dispatchers.IO) {
+            val allMatches = mutableListOf<Match>()
+            var nextUrl: String? = null
+
+            try {
+                while (nextUrl != null) {
+                    val response = apiService.getMatchesByUrl(nextUrl)
+                    allMatches += response.results.map { it.toMatch() }
+                    nextUrl = response.next
+                }
+
+                Log.d("MatchRepository", "Total matches fetched for month: ${allMatches.size}")
+                return@withContext allMatches
+            } catch (e: Exception) {
+                Log.e("MatchRepository", "Error paginating matches: ${e.message}", e)
+                return@withContext emptyList()
+            }
+        }
+    }
 }
 
 // Funzione di estensione per mappare il MatchDto al modello locale Match

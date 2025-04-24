@@ -4,5 +4,6 @@ data class MatchResponseDto(
     val count: Int,
     val next: String?,
     val previous: String?,
-    val results: List<MatchDto> // Lista di partite
+    val results: List<MatchDto>
 )
+

@@ -32,7 +32,7 @@ import java.time.Month
 @Composable
 fun HomeScreen(matchRepository: MatchRepository) {
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
-    val matches = remember { mutableStateOf<List<Match>>(emptyList()) }
+    val matchesOfMonth = remember { mutableStateOf<List<Match>>(emptyList()) }
 
     val startYear = 2020
     val endYear = 2026
@@ -42,9 +42,10 @@ fun HomeScreen(matchRepository: MatchRepository) {
         }
     }
 
-    val yearList = remember { (startYear..endYear).toList() } // Lista di anni
+    val yearList = remember { (startYear..endYear).toList() }
     val initialMonthPage = monthYearList.indexOf(YearMonth.from(selectedDate.value))
-    val initialYearPage = yearList.indexOf(selectedDate.value.year) // Indice iniziale della yearly view
+    val initialYearPage = yearList.indexOf(selectedDate.value.year)
+
     val monthPagerState = rememberPagerState(
         initialPage = initialMonthPage,
         pageCount = { monthYearList.size }
@@ -61,10 +62,9 @@ fun HomeScreen(matchRepository: MatchRepository) {
         .asPaddingValues()
         .calculateBottomPadding()
 
-    // Stato per alternare vista mensile / annuale
     val isYearlyView = remember { mutableStateOf(false) }
 
-    // Sync pager -> data per la vista mensile
+    // Sync pager -> selectedDate
     LaunchedEffect(monthPagerState.currentPage) {
         val ym = monthYearList[monthPagerState.currentPage]
         currentMonthYear.value = ym
@@ -76,28 +76,23 @@ fun HomeScreen(matchRepository: MatchRepository) {
         }
     }
 
-    // Sync pager -> data per la vista annuale
     LaunchedEffect(yearPagerState.currentPage) {
         val selectedYear = yearList[yearPagerState.currentPage]
         selectedDate.value = LocalDate.of(selectedYear, selectedDate.value.monthValue, selectedDate.value.dayOfMonth)
     }
 
-    // Sync data -> pager
-    LaunchedEffect(selectedDate.value) {
-        val newMonthIdx = monthYearList.indexOf(YearMonth.from(selectedDate.value))
-        if (newMonthIdx != monthPagerState.currentPage) {
-            coroutineScope.launch {
-                monthPagerState.animateScrollToPage(newMonthIdx)
-            }
-        }
-
-        // Carica i match per la data selezionata
+    // Scarica i match per il mese corrente
+    LaunchedEffect(currentMonthYear.value) {
         try {
-            val matchesForSelectedDate = matchRepository.getMatches(date = selectedDate.value.toString())
-            matches.value = matchesForSelectedDate
+            val startOfMonth = currentMonthYear.value.atDay(1)
+            val endOfMonth = currentMonthYear.value.atEndOfMonth()
+            val monthlyMatches = matchRepository.getMatches(
+                startDate = startOfMonth.toString(),
+                endDate = endOfMonth.toString()
+            )
+            matchesOfMonth.value = monthlyMatches
         } catch (e: Exception) {
-            // Log error or show fallback
-            matches.value = emptyList()
+            matchesOfMonth.value = emptyList()
         }
     }
 
@@ -115,16 +110,15 @@ fun HomeScreen(matchRepository: MatchRepository) {
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
-            // Top bar con visualizzazione dell'anno solo nella yearly view
             TopBar(
                 currentMonthYear = if (isYearlyView.value) {
-                    YearMonth.of(yearList[yearPagerState.currentPage], 1) // Mostra solo l'anno
+                    YearMonth.of(yearList[yearPagerState.currentPage], 1)
                 } else {
-                    currentMonthYear.value // Mostra mese e anno
+                    currentMonthYear.value
                 },
-                isYearlyView = isYearlyView.value,  // Passa lo stato isYearlyView
-                onViewToggle = { isYearlyView.value = !isYearlyView.value },  // Cambia la vista
-                onMonthClick = { isYearlyView.value = true } // Vai alla vista annuale
+                isYearlyView = isYearlyView.value,
+                onViewToggle = { isYearlyView.value = !isYearlyView.value },
+                onMonthClick = { isYearlyView.value = true }
             )
 
             AnimatedContent(
@@ -148,7 +142,7 @@ fun HomeScreen(matchRepository: MatchRepository) {
                                 val currentYear = yearList[yearPagerState.currentPage]
                                 selectedDate.value = LocalDate.of(
                                     currentYear,
-                                    selectedYearMonth.monthValue,  // Use monthValue (Int)
+                                    selectedYearMonth.monthValue,
                                     1
                                 )
                                 isYearlyView.value = false
@@ -211,7 +205,9 @@ fun HomeScreen(matchRepository: MatchRepository) {
                     }
             ) {
                 MatchList(
-                    matches = matches.value,
+                    matches = matchesOfMonth.value.filter {
+                        LocalDate.parse(it.date) == selectedDate.value
+                    },
                     selectedDate = selectedDate.value,
                     bottomPadding = bottomPadding
                 )
