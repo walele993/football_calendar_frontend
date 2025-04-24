@@ -2,6 +2,7 @@ package com.walele.footballcalendarapp.data
 
 import com.walele.footballcalendarapp.network.ApiService
 import com.walele.footballcalendarapp.network.models.MatchResponseDto
+import com.walele.footballcalendarapp.network.models.MatchDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -26,7 +27,7 @@ class MatchRepository(private val apiService: ApiService) {
 }
 
 // Funzione di estensione per mappare il MatchDto al modello locale Match
-fun MatchResponseDto.MatchDto.toMatch(): Match {
+fun MatchDto.toMatch(): Match {
     return Match(
         id = this.id,
         homeTeam = Team(this.home_team.id, this.home_team.name),

@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.walele.footballcalendarapp.ui.components.MatchList
 import com.walele.footballcalendarapp.ui.viewmodel.MatchViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MatchScreen() {
     val viewModel: MatchViewModel = viewModel()

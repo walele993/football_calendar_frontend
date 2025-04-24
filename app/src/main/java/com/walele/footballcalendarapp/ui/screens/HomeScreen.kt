@@ -66,12 +66,14 @@ fun HomeScreen(matchRepository: MatchRepository) {
 
     // Sync pager -> data per la vista mensile
     LaunchedEffect(monthPagerState.currentPage) {
-        currentMonthYear.value = monthYearList[monthPagerState.currentPage]
         val ym = monthYearList[monthPagerState.currentPage]
-        val newDate = if (YearMonth.from(selectedDate.value) == ym)
-            selectedDate.value
-        else ym.atDay(1)
-        selectedDate.value = newDate
+        currentMonthYear.value = ym
+
+        val newDate = ym.atDay(selectedDate.value.dayOfMonth.coerceAtMost(ym.lengthOfMonth()))
+
+        if (selectedDate.value != newDate) {
+            selectedDate.value = newDate
+        }
     }
 
     // Sync pager -> data per la vista annuale
@@ -90,8 +92,13 @@ fun HomeScreen(matchRepository: MatchRepository) {
         }
 
         // Carica i match per la data selezionata
-        val matchesForSelectedDate = matchRepository.getMatches(date = selectedDate.value.toString())
-        matches.value = matchesForSelectedDate
+        try {
+            val matchesForSelectedDate = matchRepository.getMatches(date = selectedDate.value.toString())
+            matches.value = matchesForSelectedDate
+        } catch (e: Exception) {
+            // Log error or show fallback
+            matches.value = emptyList()
+        }
     }
 
     Box(
