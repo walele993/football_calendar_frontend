@@ -1,25 +1,34 @@
 package com.walele.footballcalendarapp.data
 
-import android.util.Log
 import com.walele.footballcalendarapp.network.ApiService
 import com.walele.footballcalendarapp.network.models.MatchResponseDto
 import com.walele.footballcalendarapp.network.models.MatchDto
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
+import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import java.time.LocalDate
+
 
 class MatchRepository(private val apiService: ApiService) {
 
-    suspend fun getMatches(date: String? = null, startDate: String? = null, endDate: String? = null): List<Match> {
+    // Nuovo metodo che accetta le leghe selezionate
+    suspend fun getMatches(date: String? = null, startDate: String? = null, endDate: String? = null, selectedLeagues: List<Int> = listOf(14, 24, 36, 45, 49, 69, 15)): List<Match> {
         return withContext(Dispatchers.IO) {
             try {
                 // Log prima della chiamata API
-                Log.d("MatchRepository", "Fetching matches with date: $date, startDate: $startDate, endDate: $endDate")
+                Log.d("MatchRepository", "Fetching matches with date: $date, startDate: $startDate, endDate: $endDate, leagues: $selectedLeagues")
 
-                val response: MatchResponseDto = apiService.getMatches(
-                    date = date,
-                    startDate = startDate,
-                    endDate = endDate
-                )
+                // Costruisci i parametri delle leghe
+                val leagueParams = selectedLeagues.joinToString(separator = "&") { "league=$it" }
+
+                // Costruisci l'URL con le leghe selezionate
+                val url = "https://football-calendar-backend.vercel.app/api/matches/?start_date=$startDate&end_date=$endDate&$leagueParams"
+
+                // Fai la richiesta API con l'URL personalizzato
+                val response: MatchResponseDto = apiService.getMatchesByUrl(url)
 
                 // Log della risposta API
                 Log.d("MatchRepository", "Fetched matches: ${response.results.size} matches found")
@@ -35,37 +44,39 @@ class MatchRepository(private val apiService: ApiService) {
         }
     }
 
-    // Nuovo metodo per scaricare tutte le partite di un mese, gestendo la paginazione
-    suspend fun getMatchesForMonth(startDate: String, endDate: String): List<Match> {
+    // Nuovo metodo per scaricare tutte le partite di un mese con le leghe selezionate
+    suspend fun getMatchesForMonth(startDate: String, endDate: String, selectedLeagues: List<Int> = listOf(14, 24, 36, 45, 49, 69, 15)): List<Match> {
         return withContext(Dispatchers.IO) {
             val allMatches = mutableListOf<Match>()
+
             try {
-                // Log della richiesta iniziale
-                Log.d("MatchRepository", "Initial request for $startDate to $endDate")
+                // Avvia tutte le richieste in parallelo
+                val deferredResults = selectedLeagues.map { leagueId ->
+                    async {
+                        val url = "https://football-calendar-backend.vercel.app/api/matches/?start_date=$startDate&end_date=$endDate&league=$leagueId"
+                        var response = apiService.getMatchesByUrl(url)
+                        val matches = mutableListOf<Match>()
 
-                // Prima richiesta
-                var response = apiService.getMatches(
-                    startDate = startDate,
-                    endDate = endDate
-                )
-                allMatches.addAll(response.results.map { it.toMatch() })
+                        matches.addAll(response.results.map { it.toMatch() })
 
-                // Log della prima risposta
-                Log.d("MatchRepository", "First page: ${response.results.size} matches, next: ${response.next}")
+                        // Gestione paginazione per la lega corrente
+                        while (response.next != null) {
+                            response = apiService.getMatchesByUrl(response.next!!)
+                            matches.addAll(response.results.map { it.toMatch() })
+                        }
 
-                // Paginazione
-                while (response.next != null) {
-                    Log.d("MatchRepository", "Fetching next page: ${response.next}")
-                    response = apiService.getMatchesByUrl(response.next!!)
-                    allMatches.addAll(response.results.map { it.toMatch() })
-                    Log.d("MatchRepository", "Added ${response.results.size} more matches, next: ${response.next}")
+                        return@async matches
+                    }
                 }
+
+                // Ascolta i risultati da tutte le richieste parallele
+                deferredResults.awaitAll().forEach { allMatches.addAll(it) }
 
                 Log.d("MatchRepository", "Total matches fetched: ${allMatches.size}")
                 return@withContext allMatches
             } catch (e: Exception) {
                 Log.e("MatchRepository", "Error in getMatchesForMonth", e)
-                return@withContext allMatches // Restituisci comunque quelli recuperati
+                return@withContext allMatches
             }
         }
     }
