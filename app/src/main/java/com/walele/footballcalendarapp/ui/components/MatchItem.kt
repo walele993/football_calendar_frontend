@@ -17,7 +17,7 @@ fun MatchItem(match: Match) {
         Column(modifier = Modifier.padding(16.dp)) {
             // Visualizziamo la data della partita, la lega e il punteggio
             Text(
-                text = "${match.date}  •  ${match.league}",
+                text = "${match.time}  •  ${match.league}",
                 style = MaterialTheme.typography.labelMedium
             )
             Text(

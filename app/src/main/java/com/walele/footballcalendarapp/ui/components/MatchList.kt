@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.walele.footballcalendarapp.data.Match
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -23,47 +24,41 @@ fun MatchList(
     val listState = rememberLazyListState()
     val today = LocalDate.now()
 
-    // Log quando il composable viene richiamato
     Log.d("MatchList", "Rendering match list for date: $selectedDate")
 
     val label = when (selectedDate) {
-        today -> Pair("Today", today.format(DateTimeFormatter.ofPattern("d MMMM")))
-        today.plusDays(1) -> Pair("Tomorrow", today.plusDays(1).format(DateTimeFormatter.ofPattern("d MMMM")))
-        today.minusDays(1) -> Pair("Yesterday", today.minusDays(1).format(DateTimeFormatter.ofPattern("d MMMM")))
+        today -> "Today" to today.format(DateTimeFormatter.ofPattern("d MMMM"))
+        today.plusDays(1) -> "Tomorrow" to today.plusDays(1).format(DateTimeFormatter.ofPattern("d MMMM"))
+        today.minusDays(1) -> "Yesterday" to today.minusDays(1).format(DateTimeFormatter.ofPattern("d MMMM"))
         else -> {
             val dayOfWeek = selectedDate.dayOfWeek.name.lowercase().replaceFirstChar { it.titlecase() }
-            val dayOfMonth = selectedDate.dayOfMonth
-            val month = selectedDate.month.name.lowercase().replaceFirstChar { it.titlecase() }
-            Pair(dayOfWeek, "$dayOfMonth $month")
+            val dateText = selectedDate.format(DateTimeFormatter.ofPattern("d MMMM"))
+            dayOfWeek to dateText
         }
     }
+
+    val sortedMatches = matches.sortedBy { runCatching { LocalTime.parse(it.time) }.getOrNull() }
 
     LaunchedEffect(selectedDate) {
         listState.scrollToItem(0)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        if (label is Pair<*, *>) {
-            val dayOfWeekText = label.first as String
-            val dateText = label.second as String
-
-            Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
-                Text(
-                    text = dayOfWeekText,
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = Color(0xFF1F1F1F),
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = dateText,
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = Color(0xFFB0B0B0)
-                )
-            }
+        Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
+            Text(
+                text = label.first,
+                style = MaterialTheme.typography.headlineSmall,
+                color = Color(0xFF1F1F1F),
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(
+                text = label.second,
+                style = MaterialTheme.typography.headlineSmall,
+                color = Color(0xFFB0B0B0)
+            )
         }
 
-        if (matches.isEmpty()) {
-            // Log quando non ci sono partite
+        if (sortedMatches.isEmpty()) {
             Log.d("MatchList", "No matches for selected date")
             Text(
                 text = "No match today",
@@ -78,13 +73,12 @@ fun MatchList(
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
             ) {
-                items(matches.size) { index ->
-                    MatchItemCard(matches[index])
+                items(sortedMatches.size) { index ->
+                    MatchItemCard(sortedMatches[index])
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
                 item {
-                    // Aggiungi uno spacer extra per il padding
                     Spacer(modifier = Modifier.height(bottomPadding))
                 }
             }
@@ -92,17 +86,19 @@ fun MatchList(
     }
 }
 
-
 @Composable
 fun MatchItemCard(match: Match) {
+    val formattedTime = runCatching {
+        LocalTime.parse(match.time).format(DateTimeFormatter.ofPattern("HH:mm"))
+    }.getOrElse { match.time }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Visualizziamo la data della partita, la lega e il punteggio
             Text(
-                text = "${match.date}  •  ${match.league.name}",
+                text = "$formattedTime  •  ${match.league.name}",
                 style = MaterialTheme.typography.labelMedium
             )
             Text(

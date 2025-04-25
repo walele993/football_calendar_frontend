@@ -89,6 +89,7 @@ fun MatchDto.toMatch(): Match {
         homeTeam = Team(this.home_team.id, this.home_team.name),
         awayTeam = Team(this.away_team.id, this.away_team.name),
         date = this.date,
+        time = this.time,
         scoreHome = this.score_home,
         scoreAway = this.score_away,
         isCancelled = this.is_cancelled,

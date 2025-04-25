@@ -4,7 +4,8 @@ data class Match(
     val id: Int,
     val homeTeam: Team,
     val awayTeam: Team,
-    val date: String, // ISO date format
+    val date: String,
+    val time: String,
     val scoreHome: Int?,
     val scoreAway: Int?,
     val isCancelled: Boolean,
