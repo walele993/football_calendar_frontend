@@ -24,14 +24,16 @@ import com.walele.footballcalendarapp.ui.components.CalendarView
 import com.walele.footballcalendarapp.ui.components.MatchList
 import com.walele.footballcalendarapp.ui.components.TopBar
 import com.walele.footballcalendarapp.data.Match
+import com.walele.footballcalendarapp.data.League
 import com.walele.footballcalendarapp.data.MatchRepository
+import com.walele.footballcalendarapp.data.LeagueRepository
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.Month
 
 @Composable
-fun HomeScreen(matchRepository: MatchRepository) {
+fun HomeScreen(matchRepository: MatchRepository, leagueRepository: LeagueRepository) {
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
     val matchesOfMonth = remember { mutableStateOf<List<Match>>(emptyList()) }
 
@@ -84,6 +86,19 @@ fun HomeScreen(matchRepository: MatchRepository) {
         selectedDate.value = LocalDate.of(selectedYear, selectedDate.value.monthValue, selectedDate.value.dayOfMonth)
 
         Log.d("HomeScreen", "yearPagerState.currentPage changed: $selectedYear, selectedDate: $selectedDate")
+    }
+
+    // Scarica la lista di leghe
+    val leagues = remember { mutableStateOf<List<League>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        try {
+            val result = leagueRepository.getAllLeagues()
+            leagues.value = result
+            Log.d("HomeScreen", "Loaded ${result.size} leagues")
+        } catch (e: Exception) {
+            Log.e("HomeScreen", "Error loading leagues", e)
+        }
     }
 
     // Scarica i match per il mese corrente

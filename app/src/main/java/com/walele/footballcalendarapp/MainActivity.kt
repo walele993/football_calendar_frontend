@@ -12,11 +12,13 @@ import com.walele.footballcalendarapp.ui.theme.FootballCalendarAppTheme
 import androidx.core.view.WindowCompat
 import com.walele.footballcalendarapp.network.ApiService
 import com.walele.footballcalendarapp.data.MatchRepository
+import com.walele.footballcalendarapp.data.LeagueRepository
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
     private lateinit var matchRepository: MatchRepository
+    private lateinit var leagueRepository: LeagueRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,7 @@ class MainActivity : ComponentActivity() {
 
         // Crea MatchRepository con l'ApiService
         matchRepository = MatchRepository(apiService)
+        leagueRepository = LeagueRepository(apiService)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -37,7 +40,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FootballCalendarAppTheme {
                 // Passa matchRepository alla HomeScreen
-                HomeScreen(matchRepository = matchRepository)
+                HomeScreen(matchRepository = matchRepository, leagueRepository = leagueRepository)
             }
         }
     }
