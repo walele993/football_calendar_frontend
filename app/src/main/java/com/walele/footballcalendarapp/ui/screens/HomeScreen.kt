@@ -72,6 +72,8 @@ fun HomeScreen(matchRepository: MatchRepository) {
 
         val newDate = ym.atDay(selectedDate.value.dayOfMonth.coerceAtMost(ym.lengthOfMonth()))
 
+        Log.d("HomeScreen", "monthPagerState.currentPage changed: $ym, newDate: $newDate")
+
         if (selectedDate.value != newDate) {
             selectedDate.value = newDate
         }
@@ -80,6 +82,8 @@ fun HomeScreen(matchRepository: MatchRepository) {
     LaunchedEffect(yearPagerState.currentPage) {
         val selectedYear = yearList[yearPagerState.currentPage]
         selectedDate.value = LocalDate.of(selectedYear, selectedDate.value.monthValue, selectedDate.value.dayOfMonth)
+
+        Log.d("HomeScreen", "yearPagerState.currentPage changed: $selectedYear, selectedDate: $selectedDate")
     }
 
     // Scarica i match per il mese corrente
@@ -162,10 +166,22 @@ fun HomeScreen(matchRepository: MatchRepository) {
                                     1
                                 )
                                 isYearlyView.value = false
+
+                                // Aggiorna monthPagerState
+                                val mi = monthYearList.indexOf(YearMonth.of(currentYear, selectedYearMonth.monthValue))
+                                coroutineScope.launch {
+                                    monthPagerState.animateScrollToPage(mi)
+                                }
                             },
                             onDateSelected = { date, _ ->
                                 selectedDate.value = date
                                 isYearlyView.value = false
+
+                                // Aggiorna monthPagerState
+                                val mi = monthYearList.indexOf(YearMonth.from(date))
+                                coroutineScope.launch {
+                                    monthPagerState.animateScrollToPage(mi)
+                                }
                             },
                             startYear = startYear,
                             endYear = endYear
