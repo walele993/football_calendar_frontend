@@ -45,7 +45,7 @@ class MatchRepository(private val apiService: ApiService) {
     }
 
     // Nuovo metodo per scaricare tutte le partite di un mese con le leghe selezionate
-    suspend fun getMatchesForMonth(startDate: String, endDate: String, selectedLeagues: List<Int> = listOf(14, 24, 36, 45, 49, 69, 15)): List<Match> {
+    suspend fun getMatchesForMonth(startDate: String, endDate: String, selectedLeagues: List<Int> = listOf(14)): List<Match> {
         return withContext(Dispatchers.IO) {
             val allMatches = mutableListOf<Match>()
 
