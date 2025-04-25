@@ -1,5 +1,6 @@
 package com.walele.footballcalendarapp.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -86,12 +87,27 @@ fun HomeScreen(matchRepository: MatchRepository) {
         try {
             val startOfMonth = currentMonthYear.value.atDay(1)
             val endOfMonth = currentMonthYear.value.atEndOfMonth()
-            val monthlyMatches = matchRepository.getMatches(
+
+            // Log prima della chiamata
+            Log.d("HomeScreen", "Fetching matches from ${startOfMonth} to ${endOfMonth}")
+
+            val monthlyMatches = matchRepository.getMatchesForMonth(
                 startDate = startOfMonth.toString(),
                 endDate = endOfMonth.toString()
             )
+
+            // Log dopo la chiamata
+            Log.d("HomeScreen", "Received ${monthlyMatches.size} matches")
+
             matchesOfMonth.value = monthlyMatches
+
+            // Log per verificare le partite per la data selezionata
+            val matchesForSelectedDate = monthlyMatches.filter {
+                LocalDate.parse(it.date) == selectedDate.value
+            }
+            Log.d("HomeScreen", "Matches for ${selectedDate.value}: ${matchesForSelectedDate.size}")
         } catch (e: Exception) {
+            Log.e("HomeScreen", "Error fetching matches", e)
             matchesOfMonth.value = emptyList()
         }
     }

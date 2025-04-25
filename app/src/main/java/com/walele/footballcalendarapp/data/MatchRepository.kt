@@ -39,20 +39,33 @@ class MatchRepository(private val apiService: ApiService) {
     suspend fun getMatchesForMonth(startDate: String, endDate: String): List<Match> {
         return withContext(Dispatchers.IO) {
             val allMatches = mutableListOf<Match>()
-            var nextUrl: String? = null
-
             try {
-                while (nextUrl != null) {
-                    val response = apiService.getMatchesByUrl(nextUrl)
-                    allMatches += response.results.map { it.toMatch() }
-                    nextUrl = response.next
+                // Log della richiesta iniziale
+                Log.d("MatchRepository", "Initial request for $startDate to $endDate")
+
+                // Prima richiesta
+                var response = apiService.getMatches(
+                    startDate = startDate,
+                    endDate = endDate
+                )
+                allMatches.addAll(response.results.map { it.toMatch() })
+
+                // Log della prima risposta
+                Log.d("MatchRepository", "First page: ${response.results.size} matches, next: ${response.next}")
+
+                // Paginazione
+                while (response.next != null) {
+                    Log.d("MatchRepository", "Fetching next page: ${response.next}")
+                    response = apiService.getMatchesByUrl(response.next!!)
+                    allMatches.addAll(response.results.map { it.toMatch() })
+                    Log.d("MatchRepository", "Added ${response.results.size} more matches, next: ${response.next}")
                 }
 
-                Log.d("MatchRepository", "Total matches fetched for month: ${allMatches.size}")
+                Log.d("MatchRepository", "Total matches fetched: ${allMatches.size}")
                 return@withContext allMatches
             } catch (e: Exception) {
-                Log.e("MatchRepository", "Error paginating matches: ${e.message}", e)
-                return@withContext emptyList()
+                Log.e("MatchRepository", "Error in getMatchesForMonth", e)
+                return@withContext allMatches // Restituisci comunque quelli recuperati
             }
         }
     }
