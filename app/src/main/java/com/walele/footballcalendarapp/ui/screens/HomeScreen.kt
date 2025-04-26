@@ -45,7 +45,7 @@ fun HomeScreen(matchRepository: MatchRepository, leagueRepository: LeagueReposit
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
     val matchesOfMonth = remember { mutableStateOf<List<Match>>(emptyList()) }
 
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
     var showBottomSheet by remember { mutableStateOf(false) }
 
     val startYear = 2020
