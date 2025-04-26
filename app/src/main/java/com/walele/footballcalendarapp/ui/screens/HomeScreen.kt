@@ -302,7 +302,7 @@ fun HomeScreen(matchRepository: MatchRepository, leagueRepository: LeagueReposit
                     text = "Select Leagues",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
-                        .padding(bottom = 5.dp)
+                        .padding(bottom = 15.dp)
                 )
 
                 if (leagues.value.isEmpty()) {
