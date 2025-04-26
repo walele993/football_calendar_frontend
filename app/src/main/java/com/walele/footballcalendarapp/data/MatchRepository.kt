@@ -1,66 +1,82 @@
 package com.walele.footballcalendarapp.data
 
 import com.walele.footballcalendarapp.network.ApiService
-import com.walele.footballcalendarapp.network.models.MatchResponseDto
 import com.walele.footballcalendarapp.network.models.MatchDto
-import kotlinx.coroutines.withContext
+import com.walele.footballcalendarapp.network.models.MatchResponseDto
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import java.time.LocalDate
-
 
 class MatchRepository(private val apiService: ApiService) {
 
-    // Nuovo metodo che accetta le leghe selezionate
-    suspend fun getMatches(date: String? = null, startDate: String? = null, endDate: String? = null, selectedLeagues: List<Int> = listOf(14, 24, 36, 45, 49, 69, 15)): List<Match> {
+    suspend fun getMatches(
+        date: String? = null,
+        startDate: String? = null,
+        endDate: String? = null,
+        selectedLeagues: List<Int> = listOf()
+    ): List<Match> {
         return withContext(Dispatchers.IO) {
             try {
-                // Log prima della chiamata API
-                Log.d("MatchRepository", "Fetching matches with date: $date, startDate: $startDate, endDate: $endDate, leagues: $selectedLeagues")
+                // Costruisci parametri dinamicamente
+                val queryParams = mutableListOf<String>()
 
-                // Costruisci i parametri delle leghe
-                val leagueParams = selectedLeagues.joinToString(separator = "&") { "league=$it" }
+                if (startDate != null) queryParams.add("start_date=$startDate")
+                if (endDate != null) queryParams.add("end_date=$endDate")
+                if (selectedLeagues.isNotEmpty()) {
+                    selectedLeagues.forEach { leagueId ->
+                        queryParams.add("league=$leagueId")
+                    }
+                }
 
-                // Costruisci l'URL con le leghe selezionate
-                val url = "https://football-calendar-backend.vercel.app/api/matches/?start_date=$startDate&end_date=$endDate&$leagueParams"
+                val queryString = queryParams.joinToString("&")
+                val url = "https://football-calendar-backend.vercel.app/api/matches/?" + queryString
 
-                // Fai la richiesta API con l'URL personalizzato
+                Log.d("MatchRepository", "Request URL: $url")
+
                 val response: MatchResponseDto = apiService.getMatchesByUrl(url)
 
-                // Log della risposta API
                 Log.d("MatchRepository", "Fetched matches: ${response.results.size} matches found")
 
-                return@withContext response.results.map { matchDto ->
-                    matchDto.toMatch()
-                }
+                return@withContext response.results.map { it.toMatch() }
             } catch (e: Exception) {
-                // Log dell'errore
                 Log.e("MatchRepository", "Error fetching matches: ${e.message}", e)
-                return@withContext emptyList<Match>()
+                return@withContext emptyList()
             }
         }
     }
 
-    // Nuovo metodo per scaricare tutte le partite di un mese con le leghe selezionate
-    suspend fun getMatchesForMonth(startDate: String, endDate: String, selectedLeagues: List<Int> = listOf(14, 24, 36, 45, 49, 69, 15)): List<Match> {
+
+    suspend fun getMatchesForMonth(
+        startDate: String,
+        endDate: String,
+        selectedLeagues: List<Int> = listOf(14, 24, 36, 45, 49, 69, 15)
+    ): List<Match> {
         return withContext(Dispatchers.IO) {
             val allMatches = mutableListOf<Match>()
 
             try {
-                // Avvia tutte le richieste in parallelo
                 val deferredResults = selectedLeagues.map { leagueId ->
                     async {
-                        val url = "https://football-calendar-backend.vercel.app/api/matches/?start_date=$startDate&end_date=$endDate&league=$leagueId"
-                        var response = apiService.getMatchesByUrl(url)
+                        val queryParams = listOf(
+                            "start_date=$startDate",
+                            "end_date=$endDate",
+                            "league=$leagueId"
+                        ).joinToString("&")
+
+                        val initialUrl = "https://football-calendar-backend.vercel.app/api/matches/?$queryParams"
+
+                        Log.d("MatchRepository", "Requesting URL: $initialUrl")
+
+                        var response = apiService.getMatchesByUrl(initialUrl)
                         val matches = mutableListOf<Match>()
 
                         matches.addAll(response.results.map { it.toMatch() })
 
-                        // Gestione paginazione per la lega corrente
+                        // Continua a seguire la paginazione
                         while (response.next != null) {
+                            Log.d("MatchRepository", "Fetching next page: ${response.next}")
                             response = apiService.getMatchesByUrl(response.next!!)
                             matches.addAll(response.results.map { it.toMatch() })
                         }
@@ -69,10 +85,11 @@ class MatchRepository(private val apiService: ApiService) {
                     }
                 }
 
-                // Ascolta i risultati da tutte le richieste parallele
-                deferredResults.awaitAll().forEach { allMatches.addAll(it) }
+                deferredResults.awaitAll().forEach { matches ->
+                    allMatches.addAll(matches)
+                }
 
-                Log.d("MatchRepository", "Total matches fetched: ${allMatches.size}")
+                Log.d("MatchRepository", "Total matches fetched for month: ${allMatches.size}")
                 return@withContext allMatches
             } catch (e: Exception) {
                 Log.e("MatchRepository", "Error in getMatchesForMonth", e)
@@ -80,9 +97,10 @@ class MatchRepository(private val apiService: ApiService) {
             }
         }
     }
+
 }
 
-// Funzione di estensione per mappare il MatchDto al modello locale Match
+// Estensione per convertire MatchDto in Match
 fun MatchDto.toMatch(): Match {
     return Match(
         id = this.id,
