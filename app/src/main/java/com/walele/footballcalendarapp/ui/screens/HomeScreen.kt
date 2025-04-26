@@ -19,6 +19,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.material3.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import com.walele.footballcalendarapp.ui.components.YearlyCalendarView
 import com.walele.footballcalendarapp.ui.components.CalendarView
 import com.walele.footballcalendarapp.ui.components.MatchList
@@ -32,10 +36,14 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.Month
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(matchRepository: MatchRepository, leagueRepository: LeagueRepository) {
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
     val matchesOfMonth = remember { mutableStateOf<List<Match>>(emptyList()) }
+
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     val startYear = 2020
     val endYear = 2026
@@ -153,7 +161,8 @@ fun HomeScreen(matchRepository: MatchRepository, leagueRepository: LeagueReposit
                 },
                 isYearlyView = isYearlyView.value,
                 onViewToggle = { isYearlyView.value = !isYearlyView.value },
-                onMonthClick = { isYearlyView.value = true }
+                onMonthClick = { isYearlyView.value = true },
+                onFilterClick = { showBottomSheet = true }
             )
 
             AnimatedContent(
@@ -259,6 +268,19 @@ fun HomeScreen(matchRepository: MatchRepository, leagueRepository: LeagueReposit
                     bottomPadding = bottomPadding
                 )
             }
+        }
+    }
+
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            sheetState = sheetState
+        ) {
+            // Contenuto del bottom sheet (per ora finto)
+            Text(
+                text = "Qui ci saranno i filtri!",
+                modifier = Modifier.padding(16.dp)
+            )
         }
     }
 }

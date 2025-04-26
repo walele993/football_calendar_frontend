@@ -17,7 +17,8 @@ fun TopBar(
     currentMonthYear: YearMonth,
     isYearlyView: Boolean,  // Aggiungi isYearlyView come parametro
     onViewToggle: () -> Unit,  // Callback per cambiare la vista
-    onMonthClick: () -> Unit   // Callback per il clic sul mese
+    onMonthClick: () -> Unit,   // Callback per il clic sul mese
+    onFilterClick: () -> Unit   // Callback per il clic sul filtro
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
@@ -41,8 +42,8 @@ fun TopBar(
                 modifier = Modifier.clickable { onMonthClick() } // Rendi cliccabile anche l'anno
             )
         }
-        IconButton(onClick = onViewToggle) {
-            Icon(Icons.Default.FilterList, contentDescription = "Toggle View", tint = Color.Black)
+        IconButton(onClick = onFilterClick) {
+            Icon(Icons.Default.FilterList, contentDescription = "Open Filter", tint = Color.Black)
         }
     }
 }
