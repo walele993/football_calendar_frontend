@@ -17,6 +17,9 @@ class LeagueViewModel : ViewModel() {
     private val _leagues = MutableStateFlow<List<League>>(emptyList())
     val leagues: StateFlow<List<League>> = _leagues
 
+    private val _selectedLeagues = MutableStateFlow<Set<League>>(emptySet()) // Stato per le leghe selezionate
+    val selectedLeagues: StateFlow<Set<League>> = _selectedLeagues
+
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -41,6 +44,15 @@ class LeagueViewModel : ViewModel() {
             } finally {
                 _isLoading.value = false
             }
+        }
+    }
+
+    // Metodo per selezionare o deselezionare una lega
+    fun toggleLeagueSelection(league: League, isSelected: Boolean) {
+        _selectedLeagues.value = if (isSelected) {
+            _selectedLeagues.value + league // Aggiungi la lega
+        } else {
+            _selectedLeagues.value - league // Rimuovi la lega
         }
     }
 }
