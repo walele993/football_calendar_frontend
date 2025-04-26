@@ -41,8 +41,9 @@ fun HomeScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
-    val matchesOfMonth = remember { mutableStateOf<List<Match>>(emptyList()) }
-    val selectedLeagues = remember { mutableStateOf<Set<Int>>(emptySet()) }
+    val matchesOfDay = remember { mutableStateOf<List<Match>>(emptyList()) }
+    val matchesOfMonth = remember { mutableStateOf<List<Match>>(emptyList()) } // 👈 Aggiunto
+    val selectedLeagueId = remember { mutableStateOf<Int?>(null) }
 
     val isYearlyView = remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -50,9 +51,7 @@ fun HomeScreen(
     val startYear = 2020
     val endYear = 2026
     val monthYearList = remember {
-        (startYear..endYear).flatMap { year ->
-            (1..12).map { month -> YearMonth.of(year, month) }
-        }
+        (startYear..endYear).flatMap { year -> (1..12).map { month -> YearMonth.of(year, month) } }
     }
     val yearList = remember { (startYear..endYear).toList() }
 
@@ -72,9 +71,9 @@ fun HomeScreen(
 
     val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-    // Leghe disponibili
     val leagues = remember { mutableStateOf<List<League>>(emptyList()) }
 
+    // Carica tutte le leghe
     LaunchedEffect(Unit) {
         try {
             val result = leagueRepository.getAllLeagues()
@@ -93,7 +92,7 @@ fun HomeScreen(
         }
     }
 
-    // Sincronizza monthPager con selectedDate
+    // Quando cambia mese
     LaunchedEffect(monthPagerState.currentPage) {
         val ym = monthYearList[monthPagerState.currentPage]
         if (currentMonthYear.value != ym) {
@@ -102,38 +101,49 @@ fun HomeScreen(
         }
     }
 
-    // Sincronizza yearPager con selectedDate
+    // Quando cambia anno
     LaunchedEffect(yearPagerState.currentPage) {
         val selectedYear = yearList[yearPagerState.currentPage]
         selectedDate.value = selectedDate.value.withYear(selectedYear)
     }
 
-    // Carica i match filtrati
-    LaunchedEffect(currentMonthYear.value, selectedLeagues.value) {
-        if (selectedLeagues.value.isEmpty()) {
+    // 👇 FETCH SOLO AL CAMBIO MESE O LEGA
+    LaunchedEffect(currentMonthYear.value, selectedLeagueId.value) {
+        val leagueId = selectedLeagueId.value
+        if (leagueId == null) {
             matchesOfMonth.value = emptyList()
+            matchesOfDay.value = emptyList()
             return@LaunchedEffect
         }
+
         try {
-            val startOfMonth = currentMonthYear.value.atDay(1)
-            val endOfMonth = currentMonthYear.value.atEndOfMonth()
+            val year = currentMonthYear.value.year
+            val month = currentMonthYear.value.monthValue
 
-            Log.d("HomeScreen", "Fetching matches for $startOfMonth - $endOfMonth")
+            Log.d("HomeScreen", "Fetching matches for league $leagueId in $year-$month")
 
-            val monthlyMatches = matchRepository.getMatchesForMonth(
-                startDate = startOfMonth.toString(),
-                endDate = endOfMonth.toString()
+            val matches = matchRepository.getMatchesForLeagueInMonth(
+                leagueId = leagueId,
+                year = year,
+                month = month
             )
 
-            matchesOfMonth.value = monthlyMatches.filter {
-                selectedLeagues.value.contains(it.league.id)
-            }
+            matchesOfMonth.value = matches
 
-            Log.d("HomeScreen", "Loaded ${matchesOfMonth.value.size} matches after filtering")
+            // Dopo aver caricato il mese, aggiorna anche il giorno selezionato
+            matchesOfDay.value = matches.filter { it.date == selectedDate.value.toString() }
+
+            Log.d("HomeScreen", "Loaded ${matches.size} matches for the month")
         } catch (e: Exception) {
-            Log.e("HomeScreen", "Error fetching matches", e)
+            Log.e("HomeScreen", "Error fetching monthly matches", e)
             matchesOfMonth.value = emptyList()
+            matchesOfDay.value = emptyList()
         }
+    }
+
+    // 👇 FILTRA I MATCH LOCALI QUANDO CAMBIA GIORNO
+    LaunchedEffect(selectedDate.value) {
+        matchesOfDay.value = matchesOfMonth.value.filter { it.date == selectedDate.value.toString() }
     }
 
     Box(
@@ -245,9 +255,7 @@ fun HomeScreen(
                     }
             ) {
                 MatchList(
-                    matches = matchesOfMonth.value.filter {
-                        LocalDate.parse(it.date) == selectedDate.value
-                    },
+                    matches = matchesOfDay.value,
                     selectedDate = selectedDate.value,
                     bottomPadding = bottomPadding
                 )
@@ -270,32 +278,23 @@ fun HomeScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    text = "Select Leagues",
+                    text = "Select League",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
 
                 leagues.value.forEach { league ->
-                    val isSelected = selectedLeagues.value.contains(league.id)
                     TextButton(
                         onClick = {
-                            selectedLeagues.value = if (isSelected) {
-                                selectedLeagues.value - league.id
-                            } else {
-                                selectedLeagues.value + league.id
-                            }
+                            selectedLeagueId.value = league.id
+                            showBottomSheet = false
                         },
-                        modifier = Modifier.fillMaxWidth()  // Usa solo fillMaxWidth qui
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start  // Allinea il contenuto a sinistra
-                        ) {
-                            Text(
-                                text = if (isSelected) "✓ ${league.name}" else league.name,
-                                style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground)
-                            )
-                        }
+                        Text(
+                            text = league.name,
+                            style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground)
+                        )
                     }
                 }
             }
