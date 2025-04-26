@@ -19,8 +19,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import com.walele.footballcalendarapp.ui.components.YearlyCalendarView
@@ -274,13 +277,48 @@ fun HomeScreen(matchRepository: MatchRepository, leagueRepository: LeagueReposit
     if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { showBottomSheet = false },
-            sheetState = sheetState
+            sheetState = sheetState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
         ) {
-            // Contenuto del bottom sheet (per ora finto)
-            Text(
-                text = "Qui ci saranno i filtri!",
-                modifier = Modifier.padding(16.dp)
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 0.dp)
+                    .wrapContentHeight()
+            ) {
+                Text(
+                    text = "Select Leagues",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
+                        .padding(bottom = 5.dp)
+                )
+
+                if (leagues.value.isEmpty()) {
+                    Text(
+                        text = "No leagues available.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                } else {
+                    // Lista scrollabile di leghe
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        leagues.value.forEach { league ->
+                            Text(
+                                text = league.name,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 12.dp)
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
