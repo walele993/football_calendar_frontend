@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.Alignment
 import com.walele.footballcalendarapp.data.League
 import com.walele.footballcalendarapp.data.LeagueRepository
 import com.walele.footballcalendarapp.data.Match
@@ -284,12 +285,17 @@ fun HomeScreen(
                                 selectedLeagues.value + league.id
                             }
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()  // Usa solo fillMaxWidth qui
                     ) {
-                        Text(
-                            text = if (isSelected) "✓ ${league.name}" else league.name,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start  // Allinea il contenuto a sinistra
+                        ) {
+                            Text(
+                                text = if (isSelected) "✓ ${league.name}" else league.name,
+                                style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground)
+                            )
+                        }
                     }
                 }
             }
