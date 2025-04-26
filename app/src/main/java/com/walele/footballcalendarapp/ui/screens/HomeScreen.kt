@@ -105,8 +105,18 @@ fun HomeScreen(matchRepository: MatchRepository, leagueRepository: LeagueReposit
     LaunchedEffect(Unit) {
         try {
             val result = leagueRepository.getAllLeagues()
-            leagues.value = result
-            Log.d("HomeScreen", "Loaded ${result.size} leagues")
+
+            // Ordina le leghe: prima quelle con "UEFA" e poi le altre in ordine alfabetico
+            val sortedLeagues = result.sortedWith { league1, league2 ->
+                when {
+                    league1.name.contains("UEFA", ignoreCase = true) && !league2.name.contains("UEFA", ignoreCase = true) -> -1
+                    !league1.name.contains("UEFA", ignoreCase = true) && league2.name.contains("UEFA", ignoreCase = true) -> 1
+                    else -> league1.name.compareTo(league2.name)
+                }
+            }
+
+            leagues.value = sortedLeagues
+            Log.d("HomeScreen", "Loaded ${sortedLeagues.size} leagues")
         } catch (e: Exception) {
             Log.e("HomeScreen", "Error loading leagues", e)
         }

@@ -36,8 +36,18 @@ class LeagueViewModel : ViewModel() {
                 _isLoading.value = true
                 _error.value = null
                 val leagueList = leagueRepository.getAllLeagues()
-                _leagues.value = leagueList
-                Log.d("LeagueViewModel", "Leagues loaded: ${leagueList.size} leagues")
+
+                // Ordinare le leghe: prima quelle con "UEFA" e poi le altre in ordine alfabetico
+                val sortedLeagues = leagueList.sortedWith { league1, league2 ->
+                    when {
+                        league1.name.contains("UEFA", ignoreCase = true) && !league2.name.contains("UEFA", ignoreCase = true) -> -1
+                        !league1.name.contains("UEFA", ignoreCase = true) && league2.name.contains("UEFA", ignoreCase = true) -> 1
+                        else -> league1.name.compareTo(league2.name)
+                    }
+                }
+
+                _leagues.value = sortedLeagues
+                Log.d("LeagueViewModel", "Leagues loaded: ${sortedLeagues.size} leagues")
             } catch (e: Exception) {
                 Log.e("LeagueViewModel", "Error loading leagues: ${e.message}", e)
                 _error.value = "Failed to load leagues"
