@@ -18,7 +18,7 @@ import java.time.YearMonth
 fun calculateOpacity(matchCount: Int, maxMatchCount: Int): Float {
     // Aumenta la differenza di opacità con un'esponenziale più alta
     val opacity = matchCount.toFloat() / maxMatchCount
-    val adjustedOpacity = ((opacity * opacity * opacity) * 0.9f + 0.1f).coerceIn(0.4f, 1f) // Min 10% di opacità
+    val adjustedOpacity = ((opacity * opacity * opacity) * 0.9f + 0.1f).coerceIn(0.25f, 1f) // Min 10% di opacità
     println("MatchCount: $matchCount, MaxMatchCount: $maxMatchCount, Opacity: $adjustedOpacity")
     return adjustedOpacity
 }
