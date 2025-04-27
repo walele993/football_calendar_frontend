@@ -3,13 +3,15 @@ package com.walele.footballcalendarapp.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.draw.alpha
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -17,7 +19,9 @@ import java.time.YearMonth
 fun CalendarView(
     yearMonth: YearMonth,
     selectedDate: LocalDate,
-    onDateSelected: (LocalDate, Boolean) -> Unit
+    onDateSelected: (LocalDate, Boolean) -> Unit,
+    matchCountPerDay: Map<LocalDate, Int> = emptyMap(),
+    maxMatchCount: Int = 1
 ) {
     val today = LocalDate.now()
     val firstDayOfMonth = yearMonth.atDay(1)
@@ -40,7 +44,11 @@ fun CalendarView(
     }
     val allDays = (leadingDays + currentMonthDays + trailingDays).chunked(7)
 
-    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp)
+    ) {
         val weekDays = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
         Row(modifier = Modifier.fillMaxWidth()) {
             weekDays.forEach { day ->
@@ -53,12 +61,14 @@ fun CalendarView(
                 )
             }
         }
+
         allDays.forEach { week ->
             Row(modifier = Modifier.fillMaxWidth()) {
                 week.forEach { date ->
                     val isCurrentMonth = date.month == yearMonth.month
                     val isSelected = date == selectedDate
                     val isToday = date == today
+                    val matchCount = matchCountPerDay[date] ?: 0
 
                     Box(
                         modifier = Modifier
@@ -72,15 +82,33 @@ fun CalendarView(
                             .clickable { onDateSelected(date, isCurrentMonth) },
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = date.dayOfMonth.toString(),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = when {
-                                isToday -> Color(0xFFFF5722)
-                                isCurrentMonth -> Color.Black
-                                else -> Color.Gray
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = date.dayOfMonth.toString(),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = when {
+                                    isToday -> Color(0xFFFF5722)
+                                    isCurrentMonth -> Color.Black
+                                    else -> Color.Gray
+                                }
+                            )
+
+                            if (matchCount > 0) {
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .size(6.dp)
+                                        .background(
+                                            color = Color(0xFF2196F3),
+                                            shape = CircleShape
+                                        )
+                                        .alpha((matchCount.toFloat() / maxMatchCount).coerceIn(0.3f, 1f))
+                                )
                             }
-                        )
+                        }
                     }
                 }
             }

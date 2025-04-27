@@ -212,6 +212,10 @@ fun HomeScreen(
                         state = monthPagerState,
                         modifier = Modifier.fillMaxWidth()
                     ) { page ->
+                        val currentMonthMatches = matchesOfMonth.value.filter {
+                            YearMonth.from(LocalDate.parse(it.date)) == monthYearList[page]
+                        }
+
                         CalendarView(
                             yearMonth = monthYearList[page],
                             selectedDate = selectedDate.value,
@@ -223,8 +227,18 @@ fun HomeScreen(
                                         monthPagerState.animateScrollToPage(index)
                                     }
                                 }
-                            }
+                            },
+                            matchCountPerDay = currentMonthMatches
+                                .groupingBy { LocalDate.parse(it.date) }
+                                .eachCount(),
+
+                            maxMatchCount = currentMonthMatches
+                                .groupingBy { LocalDate.parse(it.date) }
+                                .eachCount()
+                                .values
+                                .maxOrNull() ?: 1
                         )
+
                     }
                 }
             }
