@@ -16,10 +16,11 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 fun calculateOpacity(matchCount: Int, maxMatchCount: Int): Float {
-    // Calcoliamo la frazione del matchCount rispetto al maxMatchCount
+    // Aumenta la differenza di opacità con un'esponenziale più alta
     val opacity = matchCount.toFloat() / maxMatchCount
-    // Applichiamo una curva che accentua le differenze
-    return (opacity * opacity).coerceIn(0.3f, 1f) // Usa la potenza per accentuare la differenza
+    val adjustedOpacity = ((opacity * opacity * opacity) * 0.9f + 0.1f).coerceIn(0.4f, 1f) // Min 10% di opacità
+    println("MatchCount: $matchCount, MaxMatchCount: $maxMatchCount, Opacity: $adjustedOpacity")
+    return adjustedOpacity
 }
 
 @Composable
@@ -28,7 +29,7 @@ fun CalendarView(
     selectedDate: LocalDate,
     onDateSelected: (LocalDate, Boolean) -> Unit,
     matchCountPerDay: Map<LocalDate, Int> = emptyMap(),
-    maxMatchCount: Int = 10
+    maxMatchCount: Int = 1
 ) {
     val today = LocalDate.now()
     val firstDayOfMonth = yearMonth.atDay(1)
@@ -105,14 +106,17 @@ fun CalendarView(
 
                             if (matchCount > 0) {
                                 Spacer(modifier = Modifier.height(4.dp))
+                                val opacity = calculateOpacity(matchCount, maxMatchCount)
+                                val ballColor = Color(0xFF2196F3).copy(alpha = opacity)
+                                println("Applying opacity: $opacity for date: $date")
                                 Box(
                                     modifier = Modifier
-                                        .size(6.dp)
+                                        .size(8.dp)
                                         .background(
-                                            color = Color(0xFF2196F3),
+                                            color = ballColor,
                                             shape = CircleShape
                                         )
-                                        .alpha(calculateOpacity(matchCount, maxMatchCount))
+                                        .alpha(opacity)
                                 )
                             }
                         }
