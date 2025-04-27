@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -19,7 +20,8 @@ import java.time.format.DateTimeFormatter
 fun MatchList(
     matches: List<Match>,
     selectedDate: LocalDate,
-    bottomPadding: Dp
+    bottomPadding: Dp,
+    leagueSelected: Boolean = false
 ) {
     val listState = rememberLazyListState()
     val today = LocalDate.now()
@@ -59,14 +61,29 @@ fun MatchList(
         }
 
         if (sortedMatches.isEmpty()) {
-            Log.d("MatchList", "No matches for selected date")
-            Text(
-                text = "No match today",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(16.dp),
-                color = Color.Gray
-            )
-        } else {
+            Log.d("MatchList", "Is league selected: $leagueSelected")
+            Log.d("MatchList", "No matches or no league selected")
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (!leagueSelected) {
+                    Text(
+                        text = "Choose a league to get started",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color(0xFFB0B0B0)
+                    )
+                } else {
+                    Text(
+                        text = "No matches for the selected date",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color(0xFFB0B0B0)
+                    )
+                }
+            }
+    } else {
             LazyColumn(
                 state = listState,
                 modifier = Modifier
