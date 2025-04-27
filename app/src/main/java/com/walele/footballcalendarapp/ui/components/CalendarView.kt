@@ -15,13 +15,20 @@ import androidx.compose.ui.draw.alpha
 import java.time.LocalDate
 import java.time.YearMonth
 
+fun calculateOpacity(matchCount: Int, maxMatchCount: Int): Float {
+    // Calcoliamo la frazione del matchCount rispetto al maxMatchCount
+    val opacity = matchCount.toFloat() / maxMatchCount
+    // Applichiamo una curva che accentua le differenze
+    return (opacity * opacity).coerceIn(0.3f, 1f) // Usa la potenza per accentuare la differenza
+}
+
 @Composable
 fun CalendarView(
     yearMonth: YearMonth,
     selectedDate: LocalDate,
     onDateSelected: (LocalDate, Boolean) -> Unit,
     matchCountPerDay: Map<LocalDate, Int> = emptyMap(),
-    maxMatchCount: Int = 1
+    maxMatchCount: Int = 10
 ) {
     val today = LocalDate.now()
     val firstDayOfMonth = yearMonth.atDay(1)
@@ -105,7 +112,7 @@ fun CalendarView(
                                             color = Color(0xFF2196F3),
                                             shape = CircleShape
                                         )
-                                        .alpha((matchCount.toFloat() / maxMatchCount).coerceIn(0.3f, 1f))
+                                        .alpha(calculateOpacity(matchCount, maxMatchCount))
                                 )
                             }
                         }
@@ -114,4 +121,5 @@ fun CalendarView(
             }
         }
     }
+
 }
