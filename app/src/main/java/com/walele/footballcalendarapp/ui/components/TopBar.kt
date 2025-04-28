@@ -3,7 +3,7 @@ package com.walele.footballcalendarapp.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.EmojiEvents
+import androidx.compose.material.icons.outlined.TravelExplore
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -45,10 +45,10 @@ fun TopBar(
         }
         IconButton(onClick = onFilterClick) {
             Icon(
-                Icons.Outlined.EmojiEvents,
+                Icons.Outlined.TravelExplore,
                 contentDescription = "Select League",
-                tint = Color.Black,
-                modifier = Modifier.size(32.dp)
+                tint = Color(0xFF1F1F1F),
+                modifier = Modifier.fillMaxSize()
             )
         }
     }
