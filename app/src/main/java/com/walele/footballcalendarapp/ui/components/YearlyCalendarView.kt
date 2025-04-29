@@ -12,7 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.walele.footballcalendarapp.ui.theme.InterVariableFont
+import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
@@ -46,7 +49,10 @@ fun YearlyCalendarView(
             ) {
                 Text(
                     text = ym.month.getDisplayName(TextStyle.SHORT, Locale.getDefault()).uppercase(),
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontFamily = OnestVariableFont,
+                        fontWeight = FontWeight.W900
+                    ),
                 )
                 MiniCalendarGrid(ym, selectedDate, onDateSelected)
             }
@@ -97,7 +103,10 @@ private fun MiniCalendarGrid(
                             val isToday = date == today
                             Text(
                                 text = date.dayOfMonth.toString(),
-                                style = MaterialTheme.typography.labelSmall,
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontFamily = InterVariableFont,
+                                    fontWeight = FontWeight.W500
+                                ),
                                 color = when {
                                     isToday -> Color(0xFFFF5722) // Colore per oggi
                                     else -> Color.Black
