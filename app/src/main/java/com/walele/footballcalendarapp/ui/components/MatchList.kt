@@ -1,20 +1,40 @@
 package com.walele.footballcalendarapp.ui.components
 
 import android.util.Log
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.EmojiEvents
+import androidx.compose.material.icons.outlined.SentimentVeryDissatisfied
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.walele.footballcalendarapp.data.Match
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun MatchList(
@@ -46,16 +66,17 @@ fun MatchList(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
+        // Header
         Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
             Text(
                 text = label.first,
-                style = MaterialTheme.typography.headlineSmall,
+                style = typography.headlineSmall,
                 color = Color(0xFF1F1F1F),
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(
                 text = label.second,
-                style = MaterialTheme.typography.headlineSmall,
+                style = typography.headlineSmall,
                 color = Color(0xFFB0B0B0)
             )
         }
@@ -63,33 +84,58 @@ fun MatchList(
         if (sortedMatches.isEmpty()) {
             Log.d("MatchList", "Is league selected: $leagueSelected")
             Log.d("MatchList", "No matches or no league selected")
+
+            val messageKey = if (!leagueSelected) "choose_league" else "no_matches"
+            var previousKey by remember { mutableStateOf("") }
+            val shouldAnimate = previousKey != messageKey
+            previousKey = messageKey
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 32.dp),
                 contentAlignment = Alignment.Center
             ) {
-                if (!leagueSelected) {
-                    Text(
-                        text = "Choose a league to get started",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color(0xFFB0B0B0)
-                    )
-                } else {
-                    Text(
-                        text = "No matches for the selected date",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color(0xFFB0B0B0)
-                    )
+                this@Column.AnimatedVisibility(
+                    visible = true,
+                    enter = if (shouldAnimate) fadeIn(animationSpec = tween(400)) else EnterTransition.None,
+                    exit = ExitTransition.None
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        val icon = if (!leagueSelected) Icons.Outlined.EmojiEvents else Icons.Outlined.SentimentVeryDissatisfied
+                        val iconModifier = Modifier
+                            .size(64.dp)
+                            .graphicsLayer {
+                                rotationZ = if (!leagueSelected) 75f else 0f
+                            }
+
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = Color(0xFFB0B0B0),
+                            modifier = iconModifier
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            text = if (!leagueSelected) "Choose a league to get started" else "No matches for the selected date",
+                            style = typography.bodyLarge,
+                            color = Color(0xFFB0B0B0)
+                        )
+                    }
                 }
             }
-    } else {
+        } else {
             LazyColumn(
                 state = listState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 32.dp)
             ) {
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
                 items(sortedMatches.size) { index ->
                     MatchItemCard(sortedMatches[index])
                     Spacer(modifier = Modifier.height(8.dp))
@@ -102,6 +148,7 @@ fun MatchList(
         }
     }
 }
+
 
 @Composable
 fun MatchItemCard(match: Match) {
