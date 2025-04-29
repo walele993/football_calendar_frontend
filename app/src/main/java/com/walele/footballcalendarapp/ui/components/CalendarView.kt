@@ -97,9 +97,9 @@ fun CalendarView(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp)
+            .padding(horizontal = 24.dp)
     ) {
-        val weekDays = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+        val weekDays = listOf("S", "M", "T", "W", "T", "F", "S")
         Row(modifier = Modifier.fillMaxWidth()) {
             weekDays.forEach { day ->
                 Text(
@@ -196,7 +196,7 @@ private fun DayCell(
     Box(
         modifier = modifier
             .aspectRatio(1f)
-            .padding(6.dp)
+            .padding(4.dp)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {

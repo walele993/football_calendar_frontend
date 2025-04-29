@@ -129,7 +129,7 @@ fun HomeScreen(
                 }
             }
 
-    ) {
+        ) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 // --- HomeScreen normale qui ---
                 Box(
