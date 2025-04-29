@@ -22,6 +22,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -71,7 +72,7 @@ fun MatchList(
             Text(
                 text = label.first,
                 style = typography.headlineSmall,
-                color = Color(0xFF1F1F1F),
+                color = Color(0xFF121212),
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(
@@ -138,7 +139,7 @@ fun MatchList(
                 }
                 items(sortedMatches.size) { index ->
                     MatchItemCard(sortedMatches[index])
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
 
                 item {
@@ -156,25 +157,35 @@ fun MatchItemCard(match: Match) {
         LocalTime.parse(match.time).format(DateTimeFormatter.ofPattern("HH:mm"))
     }.getOrElse { match.time }
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp) // Padding esterno
+            .clip(RoundedCornerShape(20.dp)) // Bordo arrotondato
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color(0xFF00A86B).copy(alpha = 0.5f), Color(0xFF00A86B).copy(alpha = 0.7f))
+                )
+            )
+            .border(1.dp, Color.White.copy(alpha = 0.2f), RoundedCornerShape(12.dp)) // Bordi bianchi
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = "$formattedTime  •  ${match.league.name}",
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelMedium,
+                color = Color.White // Colore del testo bianco per contrasto
             )
             Text(
                 text = "${match.homeTeam.name} vs ${match.awayTeam.name}",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
             )
             match.scoreHome?.let { scoreHome ->
                 match.scoreAway?.let { scoreAway ->
                     Text(
                         text = "Score: $scoreHome - $scoreAway",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFFB0B0B0)
+                        color = Color.White // Colore più chiaro per il punteggio
                     )
                 }
             }

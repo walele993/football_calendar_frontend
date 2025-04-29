@@ -49,8 +49,8 @@ fun HomeScreen(
 
     val isYearlyView = remember { mutableStateOf(false) }
 
-    val startYear = 2020
-    val endYear = 2026
+    val startYear = 2024
+    val endYear = 2027
     val monthYearList = remember {
         (startYear..endYear).flatMap { year -> (1..12).map { month -> YearMonth.of(year, month) } }
     }
@@ -204,6 +204,11 @@ fun HomeScreen(
                                         YearMonth.from(LocalDate.parse(it.date)) == monthYearList[page]
                                     }
 
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 16.dp) // Aggiungi uno spazio sopra il CalendarView
+                                    ) {
                                     CalendarView(
                                         yearMonth = monthYearList[page],
                                         selectedDate = selectedDate.value,
@@ -228,8 +233,9 @@ fun HomeScreen(
                                 }
                             }
                         }
+                        }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(40.dp))
 
                         Box(
                             modifier = Modifier

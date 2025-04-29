@@ -64,6 +64,29 @@ val SquircleShape: Shape = GenericShape { size: Size, _: LayoutDirection ->
     addPath(path)
 }
 
+val AdaptiveSquircleShape: Shape = GenericShape { size: Size, _: LayoutDirection ->
+    val width = size.width
+    val height = size.height
+    val roundness = 0.2f // Più basso per adattare la forma
+
+    val path = Path()
+    val rx = width * roundness
+    val ry = height * roundness
+
+    path.moveTo(rx, 0f)
+    path.lineTo(width - rx, 0f)
+    path.quadraticBezierTo(width, 0f, width, ry)
+    path.lineTo(width, height - ry)
+    path.quadraticBezierTo(width, height, width - rx, height)
+    path.lineTo(rx, height)
+    path.quadraticBezierTo(0f, height, 0f, height - ry)
+    path.lineTo(0f, ry)
+    path.quadraticBezierTo(0f, 0f, rx, 0f)
+    path.close()
+
+    addPath(path)
+}
+
 @Composable
 fun CalendarView(
     yearMonth: YearMonth,
@@ -104,10 +127,12 @@ fun CalendarView(
             weekDays.forEach { day ->
                 Text(
                     text = day,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 12.dp),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color.DarkGray
+                    color = Color(0xFFB0B0B0)
                 )
             }
         }
@@ -196,7 +221,7 @@ private fun DayCell(
     Box(
         modifier = modifier
             .aspectRatio(1f)
-            .padding(4.dp)
+            .padding(1.dp)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {

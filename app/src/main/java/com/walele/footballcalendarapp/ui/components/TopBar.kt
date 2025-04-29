@@ -31,7 +31,7 @@ fun TopBar(
                 val formattedMonth = currentMonthYear.month.name.lowercase().replaceFirstChar { it.uppercase() }
                 Text(
                     text = formattedMonth,
-                    style = MaterialTheme.typography.headlineSmall.copy(color = Color(0xFF1F1F1F)),
+                    style = MaterialTheme.typography.headlineSmall.copy(color = Color(0xFF121212)),
                     modifier = Modifier.clickable { onMonthClick() } // Rendi cliccabile il mese
                 )
                 Spacer(modifier = Modifier.width(4.dp))
@@ -47,7 +47,7 @@ fun TopBar(
             Icon(
                 Icons.Outlined.TravelExplore,
                 contentDescription = "Select League",
-                tint = Color(0xFF1F1F1F),
+                tint = Color(0xFF00A86B),
                 modifier = Modifier.fillMaxSize()
             )
         }
