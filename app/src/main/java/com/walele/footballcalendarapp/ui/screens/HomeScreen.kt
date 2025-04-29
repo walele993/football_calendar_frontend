@@ -79,7 +79,16 @@ fun HomeScreen(
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {  // Cambia da Rtl a Ltr
+    // Sincronizza il pager con la data selezionata
+    LaunchedEffect(selectedDate.value) {
+        val targetYearMonth = YearMonth.from(selectedDate.value)
+        val targetPage = monthYearList.indexOfFirst { it == targetYearMonth }
+        if (targetPage != -1 && targetPage != monthPagerState.currentPage) {
+            monthPagerState.animateScrollToPage(targetPage)
+        }
+    }
+
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         ModalNavigationDrawer(
             drawerState = drawerState,
             gesturesEnabled = drawerState.isOpen,
@@ -90,11 +99,10 @@ fun HomeScreen(
                             .fillMaxSize()
                             .padding(horizontal = 24.dp)
                     ) {
-                        // Titolo fisso con più spazio sotto
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 32.dp),  // Aumenta lo spazio sotto il titolo
+                                .padding(vertical = 32.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -103,7 +111,6 @@ fun HomeScreen(
                             )
                         }
 
-                        // Lista scrollabile di leghe
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -119,17 +126,14 @@ fun HomeScreen(
                                     }
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
-                                        // Nome della lega
                                         Text(
                                             text = league.name,
                                             style = MaterialTheme.typography.bodyLarge.copy(
                                                 color = if (isSelected) Color(0xFF00A86B) else MaterialTheme.colorScheme.onBackground
                                             ),
                                         )
-
-                                        // Pallino verde se la lega è selezionata
                                         if (isSelected) {
-                                            Spacer(modifier = Modifier.width(8.dp)) // Spazio tra il testo e il pallino
+                                            Spacer(modifier = Modifier.width(8.dp))
                                             Box(
                                                 modifier = Modifier
                                                     .size(8.dp)
@@ -139,16 +143,13 @@ fun HomeScreen(
                                     }
                                 }
                             }
-
                             Spacer(modifier = Modifier.height(18.dp))
                         }
                     }
                 }
             }
-
         ) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                // --- HomeScreen normale qui ---
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -193,7 +194,6 @@ fun HomeScreen(
                                             val date = LocalDate.of(year, selectedYearMonth.monthValue, 1)
                                             selectedDate.value = date
                                             isYearlyView.value = false
-
                                             coroutineScope.launch {
                                                 val index = monthYearList.indexOf(YearMonth.from(date))
                                                 monthPagerState.animateScrollToPage(index)
@@ -202,7 +202,6 @@ fun HomeScreen(
                                         onDateSelected = { date, _ ->
                                             selectedDate.value = date
                                             isYearlyView.value = false
-
                                             coroutineScope.launch {
                                                 val index = monthYearList.indexOf(YearMonth.from(date))
                                                 monthPagerState.animateScrollToPage(index)
@@ -217,39 +216,39 @@ fun HomeScreen(
                                     state = monthPagerState,
                                     modifier = Modifier.fillMaxWidth()
                                 ) { page ->
+                                    val currentMonth = monthYearList[page]
                                     val currentMonthMatches = matchesOfMonth.value.filter {
-                                        YearMonth.from(LocalDate.parse(it.date)) == monthYearList[page]
+                                        YearMonth.from(LocalDate.parse(it.date)) == currentMonth
                                     }
 
                                     Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(top = 16.dp) // Aggiungi uno spazio sopra il CalendarView
+                                            .padding(top = 16.dp)
                                     ) {
-                                    CalendarView(
-                                        yearMonth = monthYearList[page],
-                                        selectedDate = selectedDate.value,
-                                        onDateSelected = { date, isCurrentMonth ->
-                                            selectedDate.value = date
-                                            if (!isCurrentMonth) {
-                                                coroutineScope.launch {
-                                                    val index = monthYearList.indexOf(YearMonth.from(date))
-                                                    monthPagerState.animateScrollToPage(index)
+                                        CalendarView(
+                                            yearMonth = currentMonth,
+                                            selectedDate = selectedDate.value,
+                                            onDateSelected = { date, isCurrentMonth ->
+                                                selectedDate.value = date
+                                                if (!isCurrentMonth) {
+                                                    coroutineScope.launch {
+                                                        val targetPage = monthYearList.indexOf(YearMonth.from(date))
+                                                        monthPagerState.animateScrollToPage(targetPage)
+                                                    }
                                                 }
-                                            }
-                                        },
-                                        matchCountPerDay = currentMonthMatches
-                                            .groupingBy { LocalDate.parse(it.date) }
-                                            .eachCount(),
-                                        maxMatchCount = currentMonthMatches
-                                            .groupingBy { LocalDate.parse(it.date) }
-                                            .eachCount()
-                                            .values
-                                            .maxOrNull() ?: 1
-                                    )
+                                            },
+                                            matchCountPerDay = currentMonthMatches
+                                                .groupingBy { LocalDate.parse(it.date) }
+                                                .eachCount(),
+                                            maxMatchCount = currentMonthMatches
+                                                .groupingBy { LocalDate.parse(it.date) }
+                                                .eachCount()
+                                                .values.maxOrNull() ?: 1
+                                        )
+                                    }
                                 }
                             }
-                        }
                         }
 
                         Spacer(modifier = Modifier.height(40.dp))
@@ -277,7 +276,6 @@ fun HomeScreen(
                                     )
                                 }
                         ) {
-                            Log.d("HomeScreen", "Selected league ID: ${selectedLeagueId.value}")
                             MatchList(
                                 matches = matchesOfDay.value,
                                 selectedDate = selectedDate.value,
@@ -291,26 +289,24 @@ fun HomeScreen(
         }
     }
 
-    // Caricamento leghe
+    // Resto del codice invariato...
+
     LaunchedEffect(Unit) {
         try {
             val result = leagueRepository.getAllLeagues()
-
             val sortedLeagues = result.sortedWith { league1, league2 ->
                 when {
-                    league1.name.contains("UEFA", ignoreCase = true) && !league2.name.contains("UEFA", ignoreCase = true) -> -1
-                    !league1.name.contains("UEFA", ignoreCase = true) && league2.name.contains("UEFA", ignoreCase = true) -> 1
+                    league1.name.contains("UEFA", true) && !league2.name.contains("UEFA", true) -> -1
+                    !league1.name.contains("UEFA", true) && league2.name.contains("UEFA", true) -> 1
                     else -> league1.name.compareTo(league2.name)
                 }
             }
-
             leagues.value = sortedLeagues
         } catch (e: Exception) {
             Log.e("HomeScreen", "Error loading leagues", e)
         }
     }
 
-    // Cambio mese
     LaunchedEffect(monthPagerState.currentPage) {
         val ym = monthYearList[monthPagerState.currentPage]
         if (currentMonthYear.value != ym) {
@@ -319,13 +315,11 @@ fun HomeScreen(
         }
     }
 
-    // Cambio anno
     LaunchedEffect(yearPagerState.currentPage) {
         val selectedYear = yearList[yearPagerState.currentPage]
         selectedDate.value = selectedDate.value.withYear(selectedYear)
     }
 
-    // Fetch match del mese
     LaunchedEffect(currentMonthYear.value, selectedLeagueId.value) {
         val leagueId = selectedLeagueId.value
         if (leagueId == null) {
@@ -335,26 +329,20 @@ fun HomeScreen(
         }
 
         try {
-            val year = currentMonthYear.value.year
-            val month = currentMonthYear.value.monthValue
-
             val matches = matchRepository.getMatchesForLeagueInMonth(
                 leagueId = leagueId,
-                year = year,
-                month = month
+                year = currentMonthYear.value.year,
+                month = currentMonthYear.value.monthValue
             )
-
             matchesOfMonth.value = matches
             matchesOfDay.value = matches.filter { it.date == selectedDate.value.toString() }
-
         } catch (e: Exception) {
-            Log.e("HomeScreen", "Error fetching monthly matches", e)
+            Log.e("HomeScreen", "Error fetching matches", e)
             matchesOfMonth.value = emptyList()
             matchesOfDay.value = emptyList()
         }
     }
 
-    // Cambio giorno
     LaunchedEffect(selectedDate.value) {
         matchesOfDay.value = matchesOfMonth.value.filter { it.date == selectedDate.value.toString() }
     }
