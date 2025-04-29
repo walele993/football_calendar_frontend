@@ -62,48 +62,48 @@ private fun MiniCalendarGrid(
 ) {
     val today = LocalDate.now()
     val firstDayOfMonth = yearMonth.atDay(1)
-    val firstDayOfWeek = firstDayOfMonth.dayOfWeek.value % 7
+    val firstDayOfWeek = (firstDayOfMonth.dayOfWeek.value % 7) // Sunday = 0, Monday = 1, ..., Saturday = 6
     val daysInMonth = yearMonth.lengthOfMonth()
 
-    val previousMonth = yearMonth.minusMonths(1)
-    val daysInPreviousMonth = previousMonth.lengthOfMonth()
-    val leadingDays = (daysInPreviousMonth - firstDayOfWeek + 1..daysInPreviousMonth).map {
-        LocalDate.of(previousMonth.year, previousMonth.month, it)
-    }
     val currentMonthDays = (1..daysInMonth).map {
         LocalDate.of(yearMonth.year, yearMonth.month, it)
     }
-    val totalDays = leadingDays.size + currentMonthDays.size
-    val trailingDaysCount = (7 - (totalDays % 7)).takeIf { it < 7 } ?: 0
-    val nextMonth = yearMonth.plusMonths(1)
-    val trailingDays = (1..trailingDaysCount).map {
-        LocalDate.of(nextMonth.year, nextMonth.month, it)
-    }
-    val allDays = leadingDays + currentMonthDays + trailingDays
+
+    val totalCells = firstDayOfWeek + daysInMonth
+    val rows = totalCells / 7 + if (totalCells % 7 != 0) 1 else 0
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        for (week in allDays.chunked(7)) {
+        for (row in 0 until rows) {
             Row(modifier = Modifier.fillMaxWidth()) {
-                week.forEach { date ->
-                    val isCurrentMonth = date.month == yearMonth.month
-                    val isToday = date == today
+                // Aggiungi gli spazi vuoti prima dei giorni effettivi
+                for (col in 0..6) {
+                    val index = row * 7 + col
+                    val date = if (index >= firstDayOfWeek && index < firstDayOfWeek + daysInMonth) {
+                        currentMonthDays[index - firstDayOfWeek]
+                    } else {
+                        null // Nessun giorno in questo spazio
+                    }
 
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .aspectRatio(1f)
-                            .clickable { onDateSelected(date, isCurrentMonth)},
+                            .clickable(enabled = date != null) {
+                                date?.let { onDateSelected(it, true) }
+                            },
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = date.dayOfMonth.toString(),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = when {
-                                isToday -> Color(0xFFFF5722) // Colore per oggi
-                                isCurrentMonth -> Color.Black
-                                else -> Color.Gray
-                            }
-                        )
+                        if (date != null) {
+                            val isToday = date == today
+                            Text(
+                                text = date.dayOfMonth.toString(),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = when {
+                                    isToday -> Color(0xFFFF5722) // Colore per oggi
+                                    else -> Color.Black
+                                }
+                            )
+                        }
                     }
                 }
             }

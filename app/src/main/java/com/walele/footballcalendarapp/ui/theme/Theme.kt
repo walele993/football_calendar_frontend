@@ -6,6 +6,10 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import com.walele.footballcalendar.R
 
 // Colori per il tema chiaro
 val BackgroundLight = Color(0xFFFFFFFF) // Bianco
@@ -46,6 +50,19 @@ private val DarkColors = darkColorScheme(
     surface = BackgroundDark,
     onSurface = PrimaryTextDark
 )
+
+val OnestVariableFont = FontFamily(
+    Font(R.font.onest_variablefont_wght, weight = FontWeight.Normal)
+)
+
+val InterVariableFont = FontFamily(
+    Font(R.font.inter_variablefont_opsz_wght, weight = FontWeight.Normal)
+)
+
+val InterItalicVariableFont = FontFamily(
+    Font(R.font.inter_italic_variablefont_opsz_wght, weight = FontWeight.Normal)
+)
+
 
 @Composable
 fun FootballCalendarAppTheme(

@@ -33,6 +33,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.remember
+import androidx.compose.ui.text.font.FontWeight
+import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
 import kotlin.math.sin
 
 fun calculateOpacity(matchCount: Int, maxMatchCount: Int): Float {
@@ -131,7 +133,10 @@ fun CalendarView(
                         .weight(1f)
                         .padding(vertical = 12.dp),
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.labelSmall,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontFamily = OnestVariableFont,
+                        fontWeight = FontWeight.W900
+                    ),
                     color = Color(0xFFB0B0B0)
                 )
             }
@@ -257,7 +262,10 @@ private fun DayCell(
             ) {
                 Text(
                     text = date.dayOfMonth.toString(),
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontFamily = OnestVariableFont,
+                        fontWeight = FontWeight.W900
+                    ),
                     color = when {
                         isToday -> Color(0xFFFF6B00)
                         isSelected -> Color.Black
@@ -269,7 +277,7 @@ private fun DayCell(
                 if (isSelected) {
                     Box(
                         modifier = Modifier
-                            .offset(y = 3.dp)
+                            .offset(y = 1.dp)
                             .width(animatedBarWidth)
                             .height(3.dp)
                             .background(color = selectionColor, shape = CircleShape)

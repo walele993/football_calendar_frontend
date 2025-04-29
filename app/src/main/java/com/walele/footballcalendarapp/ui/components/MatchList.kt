@@ -35,7 +35,9 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
 
 @Composable
 fun MatchList(
@@ -71,13 +73,17 @@ fun MatchList(
         Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
             Text(
                 text = label.first,
-                style = typography.headlineSmall,
+                style = typography.headlineSmall.copy(
+                    fontFamily = OnestVariableFont,
+                    fontWeight = FontWeight.W900,),
                 color = Color(0xFF121212),
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(
                 text = label.second,
-                style = typography.headlineSmall,
+                style = typography.headlineSmall.copy(
+                    fontFamily = OnestVariableFont,
+                    fontWeight = FontWeight.W900,),
                 color = Color(0xFFB0B0B0)
             )
         }
