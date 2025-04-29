@@ -137,7 +137,7 @@ fun CalendarView(
                         fontFamily = OnestVariableFont,
                         fontWeight = FontWeight.W900
                     ),
-                    color = Color(0xFFB0B0B0)
+                    color = Color(0xFFFF6B00)
                 )
             }
         }

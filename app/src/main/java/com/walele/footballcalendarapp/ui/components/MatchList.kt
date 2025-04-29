@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.walele.footballcalendarapp.ui.theme.InterVariableFont
 import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
 
 @Composable
@@ -119,16 +120,19 @@ fun MatchList(
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = Color(0xFFB0B0B0),
+                            tint = Color(0xFFFF6B00),
                             modifier = iconModifier
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
 
                         Text(
                             text = if (!leagueSelected) "Choose a league to get started" else "No matches for the selected date",
-                            style = typography.bodyLarge,
-                            color = Color(0xFFB0B0B0)
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontFamily = OnestVariableFont,
+                                fontWeight = FontWeight.W700
+                            ),
+                            color = Color(0xFFFF6B00)
                         )
                     }
                 }
@@ -178,19 +182,28 @@ fun MatchItemCard(match: Match) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = "$formattedTime  •  ${match.league.name}",
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontFamily = InterVariableFont,
+                    fontWeight = FontWeight.W500
+                ),
                 color = Color.White // Colore del testo bianco per contrasto
             )
             Text(
                 text = "${match.homeTeam.name} vs ${match.awayTeam.name}",
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = OnestVariableFont,
+                    fontWeight = FontWeight.W900
+                ),
                 color = Color.White
             )
             match.scoreHome?.let { scoreHome ->
                 match.scoreAway?.let { scoreAway ->
                     Text(
                         text = "Score: $scoreHome - $scoreAway",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontFamily = InterVariableFont,
+                            fontWeight = FontWeight.W500
+                        ),
                         color = Color.White // Colore più chiaro per il punteggio
                     )
                 }

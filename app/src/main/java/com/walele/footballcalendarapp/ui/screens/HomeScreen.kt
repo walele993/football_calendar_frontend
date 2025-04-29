@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.walele.footballcalendarapp.data.League
@@ -33,11 +34,12 @@ import com.walele.footballcalendarapp.ui.components.CalendarView
 import com.walele.footballcalendarapp.ui.components.MatchList
 import com.walele.footballcalendarapp.ui.components.TopBar
 import com.walele.footballcalendarapp.ui.components.YearlyCalendarView
+import com.walele.footballcalendarapp.ui.theme.InterVariableFont
+import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     matchRepository: MatchRepository,
@@ -107,7 +109,11 @@ fun HomeScreen(
                         ) {
                             Text(
                                 text = "Select League",
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontFamily = OnestVariableFont,
+                                    fontWeight = FontWeight.W700
+                                ),
+                                color = Color(0xFFFF6B00)
                             )
                         }
 
@@ -128,7 +134,9 @@ fun HomeScreen(
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Text(
                                             text = league.name,
-                                            style = MaterialTheme.typography.bodyLarge.copy(
+                                            style = MaterialTheme.typography.bodyMedium.copy(
+                                                fontFamily = InterVariableFont,
+                                                fontWeight = FontWeight.W500,
                                                 color = if (isSelected) Color(0xFF00A86B) else MaterialTheme.colorScheme.onBackground
                                             ),
                                         )
