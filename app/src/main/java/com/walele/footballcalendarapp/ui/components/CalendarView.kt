@@ -29,6 +29,11 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.geometry.Size
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.remember
+import kotlin.math.sin
 
 fun calculateOpacity(matchCount: Int, maxMatchCount: Int): Float {
     val opacity = matchCount.toFloat() / maxMatchCount
@@ -137,13 +142,13 @@ private fun DayCell(
     maxMatchCount: Int,
     onClick: () -> Unit
 ) {
-    val selectionColor = Color(0xFFFF6B00) // Arancione intenso
+    val selectionColor = Color(0xFF00A86B) // Arancione intenso
 
     val animatedElevation by animateDpAsState(
         targetValue = if (isSelected) 4.dp else 0.dp,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
+            stiffness = 500f
         ),
         label = "ElevationAnimation"
     )
@@ -151,8 +156,8 @@ private fun DayCell(
     val animatedBarWidth by animateDpAsState(
         targetValue = if (isSelected) 24.dp else 0.dp,
         animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessVeryLow
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = 700f
         ),
         label = "BarWidthAnimation"
     )
@@ -173,6 +178,19 @@ private fun DayCell(
             stiffness = Spring.StiffnessLow
         ),
         label = "OffsetYAnimation"
+    )
+
+    val targetTilt = if (isSelected) {
+        val wave = sin((animatedScale * 10f).toDouble()) * 1.0
+        wave.toFloat()
+    } else {
+        0f
+    }
+
+    val tilt by animateFloatAsState(
+        targetValue = targetTilt,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = 0f),
+        label = "Tilt"
     )
 
     Box(
@@ -202,7 +220,8 @@ private fun DayCell(
             modifier = Modifier
                 .graphicsLayer(
                     scaleX = animatedScale,
-                    scaleY = animatedScale
+                    scaleY = animatedScale,
+                    rotationZ = tilt
                 )
         ) {
             Column(
@@ -215,8 +234,8 @@ private fun DayCell(
                     text = date.dayOfMonth.toString(),
                     style = MaterialTheme.typography.bodySmall,
                     color = when {
+                        isToday -> Color(0xFFFF6B00)
                         isSelected -> Color.Black
-                        isToday -> selectionColor
                         isCurrentMonth -> Color.Black
                         else -> Color.Gray
                     }
