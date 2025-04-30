@@ -13,6 +13,8 @@ import androidx.core.view.WindowCompat
 import com.walele.footballcalendarapp.network.ApiService
 import com.walele.footballcalendarapp.data.MatchRepository
 import com.walele.footballcalendarapp.data.LeagueRepository
+import com.walele.footballcalendarapp.data.local.AppDatabase
+import androidx.room.Room
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -30,16 +32,26 @@ class MainActivity : ComponentActivity() {
             .build()
             .create(ApiService::class.java)
 
-        // Crea MatchRepository con l'ApiService
-        matchRepository = MatchRepository(apiService)
+        // Inizializzazione del database e del MatchDao
+        val database = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "football_database"
+        ).build()
+
+        val matchDao = database.matchDao()
+
+        // Crea MatchRepository con l'ApiService e MatchDao
+        matchRepository = MatchRepository(apiService, matchDao)
         leagueRepository = LeagueRepository(apiService)
 
+        // Impostazione delle finestre per adattarsi alla UI
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        // L'inizializzazione della vista verrà fatta solo al ritorno nel ciclo di vita dell'attività
+        // Imposta il contenuto della schermata
         setContent {
             FootballCalendarAppTheme {
-                // Passa matchRepository alla HomeScreen
+                // Passa matchRepository e leagueRepository alla HomeScreen
                 HomeScreen(matchRepository = matchRepository, leagueRepository = leagueRepository)
             }
         }
