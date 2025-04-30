@@ -330,6 +330,8 @@ fun HomeScreen(
 
     LaunchedEffect(currentMonthYear.value, selectedLeagueId.value) {
         val leagueId = selectedLeagueId.value
+        val currentYM = currentMonthYear.value
+
         if (leagueId == null) {
             matchesOfMonth.value = emptyList()
             matchesOfDay.value = emptyList()
@@ -337,13 +339,46 @@ fun HomeScreen(
         }
 
         try {
+            // Carica il mese corrente
             val matches = matchRepository.getMatchesForLeagueInMonth(
                 leagueId = leagueId,
-                year = currentMonthYear.value.year,
-                month = currentMonthYear.value.monthValue
+                year = currentYM.year,
+                month = currentYM.monthValue
             )
+            Log.d("HomeScreen", "Loaded matches for $currentYM: ${matches.size} matches (current)")
             matchesOfMonth.value = matches
             matchesOfDay.value = matches.filter { it.date == selectedDate.value.toString() }
+
+            // Precarica mesi precedente e successivo
+            val previousYM = currentYM.minusMonths(1)
+            val nextYM = currentYM.plusMonths(1)
+
+            coroutineScope.launch {
+                try {
+                    matchRepository.getMatchesForLeagueInMonth(
+                        leagueId = leagueId,
+                        year = previousYM.year,
+                        month = previousYM.monthValue
+                    )
+                    Log.d("HomeScreen", "Preloaded previous month: $previousYM")
+                } catch (e: Exception) {
+                    Log.e("HomeScreen", "Error preloading previous month", e)
+                }
+            }
+
+            coroutineScope.launch {
+                try {
+                    matchRepository.getMatchesForLeagueInMonth(
+                        leagueId = leagueId,
+                        year = nextYM.year,
+                        month = nextYM.monthValue
+                    )
+                    Log.d("HomeScreen", "Preloaded next month: $nextYM")
+                } catch (e: Exception) {
+                    Log.e("HomeScreen", "Error preloading next month", e)
+                }
+            }
+
         } catch (e: Exception) {
             Log.e("HomeScreen", "Error fetching matches", e)
             matchesOfMonth.value = emptyList()
