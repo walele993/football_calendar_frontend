@@ -45,7 +45,7 @@ fun TopBar(
                     ),
                     modifier = Modifier.clickable { onMonthClick() }
                 )
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(8.dp))
             }
 
             val yearColor = if (isYearlyView) Color(0xFF121212) else Color(0xFFB0B0B0) // Nero se solo l'anno

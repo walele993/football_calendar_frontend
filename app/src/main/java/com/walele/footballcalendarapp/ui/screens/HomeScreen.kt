@@ -111,7 +111,7 @@ fun HomeScreen(
                                 text = "Select League",
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontFamily = OnestVariableFont,
-                                    fontWeight = FontWeight.W700
+                                    fontWeight = FontWeight.W400
                                 ),
                                 color = Color(0xFFFF6B00)
                             )
@@ -135,8 +135,8 @@ fun HomeScreen(
                                         Text(
                                             text = league.name,
                                             style = MaterialTheme.typography.bodyMedium.copy(
-                                                fontFamily = InterVariableFont,
-                                                fontWeight = FontWeight.W500,
+                                                fontFamily = OnestVariableFont,
+                                                fontWeight = FontWeight.W400,
                                                 color = if (isSelected) Color(0xFF00A86B) else MaterialTheme.colorScheme.onBackground
                                             ),
                                         )

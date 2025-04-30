@@ -133,9 +133,9 @@ fun CalendarView(
                         .weight(1f)
                         .padding(vertical = 12.dp),
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge.copy(
+                    style = MaterialTheme.typography.bodySmall.copy(
                         fontFamily = OnestVariableFont,
-                        fontWeight = FontWeight.W900
+                        fontWeight = FontWeight.W400
                     ),
                     color = Color(0xFFFF6B00)
                 )
@@ -264,7 +264,7 @@ private fun DayCell(
                     text = date.dayOfMonth.toString(),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontFamily = OnestVariableFont,
-                        fontWeight = FontWeight.W900
+                        fontWeight = FontWeight.W400
                     ),
                     color = when {
                         isToday -> Color(0xFFFF6B00)
