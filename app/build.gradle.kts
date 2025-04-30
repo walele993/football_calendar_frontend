@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -55,4 +56,11 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.gsonConverter)
+    ksp(libs.room.compiler)
+    implementation(libs.work.runtime.ktx)
+    ksp(libs.ksp)
+}
+
+ksp {
+    arg("room.schemaLocation", "${project.buildDir}/schemas")
 }

@@ -65,6 +65,10 @@ lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel
 #noinspection SimilarGradleDependency
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 gsonConverter = { module = "com.squareup.retrofit2:converter-gson", version.ref = "gsonConverter" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version = "2.7.1" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version = "2.7.1" }
+work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version = "2.10.1" }
+ksp = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version = "2.0.21-1.0.27" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
