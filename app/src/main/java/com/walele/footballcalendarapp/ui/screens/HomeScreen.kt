@@ -113,7 +113,7 @@ fun HomeScreen(
                                     fontFamily = OnestVariableFont,
                                     fontWeight = FontWeight.W400
                                 ),
-                                color = Color(0xFFFF6B00)
+                                color = Color(0xFFb5c99a)
                             )
                         }
 
@@ -137,7 +137,7 @@ fun HomeScreen(
                                             style = MaterialTheme.typography.bodyMedium.copy(
                                                 fontFamily = OnestVariableFont,
                                                 fontWeight = FontWeight.W400,
-                                                color = if (isSelected) Color(0xFF00A86B) else MaterialTheme.colorScheme.onBackground
+                                                color = if (isSelected) Color(0xFF00A86B) else Color(0xFF1e1e1e)
                                             ),
                                         )
                                         if (isSelected) {
@@ -161,6 +161,7 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .background(Color(0xFFF2F2F2))
                         .padding(WindowInsets.systemBars.only(WindowInsetsSides.Top).asPaddingValues())
                 ) {
                     Column(
@@ -296,8 +297,6 @@ fun HomeScreen(
             }
         }
     }
-
-    // Resto del codice invariato...
 
     LaunchedEffect(Unit) {
         try {

@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
@@ -77,7 +78,7 @@ fun MatchList(
                 style = typography.headlineSmall.copy(
                     fontFamily = OnestVariableFont,
                     fontWeight = FontWeight.W900,),
-                color = Color(0xFF121212),
+                color = Color(0xFF1e1e1e),
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(
@@ -120,7 +121,7 @@ fun MatchList(
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = Color(0xFFFF6B00),
+                            tint = Color(0xFFB0B0B0),
                             modifier = iconModifier
                         )
 
@@ -130,9 +131,9 @@ fun MatchList(
                             text = if (!leagueSelected) "Choose a league to get started" else "No matches for the selected date",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontFamily = OnestVariableFont,
-                                fontWeight = FontWeight.W700
+                                fontWeight = FontWeight.W500
                             ),
-                            color = Color(0xFFFF6B00)
+                            color = Color(0xFFB0B0B0)
                         )
                     }
                 }
@@ -167,44 +168,68 @@ fun MatchItemCard(match: Match) {
         LocalTime.parse(match.time).format(DateTimeFormatter.ofPattern("HH:mm"))
     }.getOrElse { match.time }
 
-    Box(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(0.dp) // Padding esterno
-            .clip(RoundedCornerShape(20.dp)) // Bordo arrotondato
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .shadow(elevation = 4.dp, shape = RoundedCornerShape(20.dp))
             .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFF00A86B).copy(alpha = 0.5f), Color(0xFF00A86B).copy(alpha = 0.7f))
-                )
-            )
-            .border(1.dp, Color.White.copy(alpha = 0.2f), RoundedCornerShape(12.dp)) // Bordi bianchi
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = "$formattedTime  •  ${match.league.name}",
-                style = MaterialTheme.typography.labelLarge.copy(
-                    fontFamily = InterVariableFont,
-                    fontWeight = FontWeight.W500
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFFFFFFFF), Color(0xFFF0F0F0))
                 ),
-                color = Color.White // Colore del testo bianco per contrasto
+                shape = RoundedCornerShape(20.dp)
             )
+            .clip(RoundedCornerShape(20.dp))
+            .animateContentSize(),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = formattedTime,
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontFamily = InterVariableFont,
+                        fontWeight = FontWeight.W400
+                    ),
+                    color = Color(0xFF00A86B)
+                )
+                Text(
+                    text = match.league.name,
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontFamily = InterVariableFont,
+                        fontWeight = FontWeight.W400
+                    ),
+                    color = Color(0xFF757575)
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "${match.homeTeam.name} vs ${match.awayTeam.name}",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontFamily = OnestVariableFont,
-                    fontWeight = FontWeight.W900
+                    fontWeight = FontWeight.W400
                 ),
-                color = Color.White
+                color = Color(0xFF1e1e1e)
             )
             match.scoreHome?.let { scoreHome ->
                 match.scoreAway?.let { scoreAway ->
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Score: $scoreHome - $scoreAway",
+                        text = "$scoreHome - $scoreAway",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontFamily = InterVariableFont,
-                            fontWeight = FontWeight.W500
+                            fontWeight = FontWeight.W400
                         ),
-                        color = Color.White // Colore più chiaro per il punteggio
+                        color = Color(0xFF1e1e1e)
                     )
                 }
             }

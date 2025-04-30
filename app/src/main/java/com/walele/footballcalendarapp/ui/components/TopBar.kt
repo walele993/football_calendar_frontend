@@ -41,14 +41,14 @@ fun TopBar(
                     style = MaterialTheme.typography.headlineSmall.copy(
                         fontFamily = OnestVariableFont,
                         fontWeight = FontWeight.W900,
-                        color = Color(0xFF121212) // Nero
+                        color = Color(0xFF1e1e1e) // Nero
                     ),
                     modifier = Modifier.clickable { onMonthClick() }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
             }
 
-            val yearColor = if (isYearlyView) Color(0xFF121212) else Color(0xFFB0B0B0) // Nero se solo l'anno
+            val yearColor = if (isYearlyView) Color(0xFF1e1e1e) else Color(0xFFB0B0B0) // Nero se solo l'anno
 
             Text(
                 text = "${currentMonthYear.year}",

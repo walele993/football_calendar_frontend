@@ -23,8 +23,8 @@ import java.util.*
 
 @Composable
 fun YearlyCalendarView(
-    startYear: Int = 2020,
-    endYear: Int = 2030,
+    startYear: Int = 2024,
+    endYear: Int = 2027,
     selectedDate: LocalDate,
     onMonthSelected: (YearMonth) -> Unit,
     onDateSelected: (LocalDate, Boolean) -> Unit,
@@ -51,7 +51,7 @@ fun YearlyCalendarView(
                     text = ym.month.getDisplayName(TextStyle.SHORT, Locale.getDefault()).uppercase(),
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontFamily = OnestVariableFont,
-                        fontWeight = FontWeight.W900
+                        fontWeight = FontWeight.W400
                     ),
                 )
                 MiniCalendarGrid(ym, selectedDate, onDateSelected)
@@ -104,12 +104,12 @@ private fun MiniCalendarGrid(
                             Text(
                                 text = date.dayOfMonth.toString(),
                                 style = MaterialTheme.typography.labelSmall.copy(
-                                    fontFamily = InterVariableFont,
-                                    fontWeight = FontWeight.W500
+                                    fontFamily = OnestVariableFont,
+                                    fontWeight = FontWeight.W400
                                 ),
                                 color = when {
                                     isToday -> Color(0xFFFF5722) // Colore per oggi
-                                    else -> Color.Black
+                                    else -> Color(0xFF1e1e1e)
                                 }
                             )
                         }
