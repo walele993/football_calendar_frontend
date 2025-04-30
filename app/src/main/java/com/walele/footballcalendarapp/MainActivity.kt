@@ -33,17 +33,19 @@ class MainActivity : ComponentActivity() {
             .create(ApiService::class.java)
 
         // Inizializzazione del database e del MatchDao
-        val database = Room.databaseBuilder(
+        val appDatabase = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
-            "football_database"
+            "football-calendar-db"
         ).build()
 
-        val matchDao = database.matchDao()
+        val matchDao = appDatabase.matchDao()
+        val leagueDao = appDatabase.leagueDao()
 
         // Crea MatchRepository con l'ApiService e MatchDao
         matchRepository = MatchRepository(apiService, matchDao)
-        leagueRepository = LeagueRepository(apiService)
+        // Crea LeagueRepository con l'ApiService e AppDatabase
+        leagueRepository = LeagueRepository(apiService, leagueDao)
 
         // Impostazione delle finestre per adattarsi alla UI
         WindowCompat.setDecorFitsSystemWindows(window, false)
