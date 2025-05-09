@@ -109,11 +109,11 @@ fun HomeScreen(
                         ) {
                             Text(
                                 text = "Select League",
-                                style = MaterialTheme.typography.titleMedium.copy(
+                                style = MaterialTheme.typography.titleLarge.copy(
                                     fontFamily = OnestVariableFont,
-                                    fontWeight = FontWeight.W400
+                                    fontWeight = FontWeight.W900
                                 ),
-                                color = Color(0xFFb5c99a)
+                                color = Color(0xFF1e1e1e)
                             )
                         }
 
