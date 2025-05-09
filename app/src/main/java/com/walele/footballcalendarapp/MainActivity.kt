@@ -17,6 +17,9 @@ import com.walele.footballcalendarapp.data.local.AppDatabase
 import androidx.room.Room
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import androidx.compose.runtime.SideEffect
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import androidx.compose.ui.graphics.Color
 
 class MainActivity : ComponentActivity() {
     private lateinit var matchRepository: MatchRepository
@@ -54,8 +57,17 @@ class MainActivity : ComponentActivity() {
 
         // Imposta il contenuto della schermata
         setContent {
+            val systemUiController = rememberSystemUiController()
+            val useDarkIcons = true // <-- icone scure su fondo chiaro
+
+            SideEffect {
+                systemUiController.setSystemBarsColor(
+                    color = Color.White,
+                    darkIcons = useDarkIcons
+                )
+            }
+
             FootballCalendarAppTheme {
-                // Passa matchRepository e leagueRepository alla HomeScreen
                 HomeScreen(matchRepository = matchRepository, leagueRepository = leagueRepository)
             }
         }

@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.gsonConverter)
     implementation(libs.room.runtime)
+    implementation(libs.accompanist.systemuicontroller)
     ksp(libs.room.compiler)
     ksp(libs.ksp)
 }
