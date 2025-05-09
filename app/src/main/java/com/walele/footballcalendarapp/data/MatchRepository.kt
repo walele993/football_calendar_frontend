@@ -1,20 +1,18 @@
 package com.walele.footballcalendarapp.data
 
-import com.walele.footballcalendarapp.network.ApiService
-import com.walele.footballcalendarapp.network.models.MatchDto
-import com.walele.footballcalendarapp.network.models.MatchResponseDto
+import android.util.Log
+
 import com.walele.footballcalendarapp.data.local.MatchDao
-import com.walele.footballcalendarapp.data.local.CachedMatch
-import com.walele.footballcalendarapp.data.local.AppDatabase
 import com.walele.footballcalendarapp.data.mappers.toCachedMatch
 import com.walele.footballcalendarapp.data.mappers.toMatch
+import com.walele.footballcalendarapp.network.ApiService
+import com.walele.footballcalendarapp.data.Match
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
-import android.util.Log
+
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 
 class MatchRepository(
     private val apiService: ApiService,
@@ -25,47 +23,46 @@ class MatchRepository(
         date: String? = null,
         startDate: String? = null,
         endDate: String? = null,
-        selectedLeagues: List<Int> = listOf()
+        selectedLeagues: List<Int> = emptyList()
     ): List<Match> = withContext(Dispatchers.IO) {
         try {
+            // Elimina cache più vecchia di 24 ore
             val twentyFourHoursAgo = System.currentTimeMillis() - 24 * 60 * 60 * 1000
             matchDao.deleteExpiredMatches(twentyFourHoursAgo)
 
-            if (startDate != null && endDate != null) {
-                val cachedMatches = matchDao.getMatchesBetween(startDate, endDate)
-                if (cachedMatches.isNotEmpty()) {
-                    Log.d("MatchRepository", "Returning ${cachedMatches.size} matches from cache")
-                    return@withContext cachedMatches.map { it.toMatch() }
+            // Verifica la cache esistente solo se sono selezionate le leghe
+            if (startDate != null && endDate != null && selectedLeagues.isNotEmpty()) {
+                val cached = matchDao.getMatchesBetween(startDate, endDate)
+                val filteredCache = cached.filter { it.leagueId in selectedLeagues }
+
+                // Se ci sono dati in cache per la lega selezionata, usali
+                if (filteredCache.isNotEmpty()) {
+                    Log.d("MatchRepository", "Returning ${filteredCache.size} matches from cache")
+                    return@withContext filteredCache.map { it.toMatch() }
                 }
             }
 
-            val queryParams = mutableListOf<String>()
-            if (startDate != null) queryParams.add("start_date=$startDate")
-            if (endDate != null) queryParams.add("end_date=$endDate")
-            if (date != null) queryParams.add("date=$date")
-            selectedLeagues.forEach { queryParams.add("league=$it") }
+            // Richieste parallele per ogni lega selezionata se la cache è vuota o non valida
+            val matches = selectedLeagues.map { leagueId ->
+                async {
+                    Log.d("MatchRepository", "Fetching matches for league $leagueId")
+                    val response = apiService.getFilteredMatches(
+                        date = date,
+                        startDate = startDate,
+                        endDate = endDate,
+                        league = leagueId
+                    )
+                    response.map { it.toMatch() }
+                }
+            }.awaitAll().flatten()
 
-            val queryString = queryParams.joinToString("&")
-            val url = "https://football-calendar-backend.vercel.app/api/matches/?$queryString"
+            // Inserisci i nuovi match nella cache
+            Log.d("MatchRepository", "Fetched ${matches.size} fresh matches")
+            matchDao.insertMatches(matches.map { it.toCachedMatch() })
 
-            Log.d("MatchRepository", "Request URL: $url")
-
-            var response = apiService.getMatchesByUrl(url)
-            val allMatches = mutableListOf<Match>()
-            allMatches.addAll(response.results.map { it.toMatch() })
-
-            while (response.next != null) {
-                response = apiService.getMatchesByUrl(response.next!!)
-                allMatches.addAll(response.results.map { it.toMatch() })
-            }
-
-            Log.d("MatchRepository", "Fetched ${allMatches.size} fresh matches")
-
-            matchDao.insertMatches(allMatches.map { it.toCachedMatch() })
-
-            return@withContext allMatches
+            return@withContext matches
         } catch (e: Exception) {
-            Log.e("MatchRepository", "Error fetching matches: ${e.message}", e)
+            Log.e("MatchRepository", "Error fetching matches", e)
             return@withContext emptyList()
         }
     }
@@ -73,50 +70,18 @@ class MatchRepository(
     suspend fun getMatchesForMonth(
         year: Int,
         month: Int,
-        selectedLeagues: List<Int> = listOf()
+        selectedLeagues: List<Int> = emptyList()
     ): List<Match> = withContext(Dispatchers.IO) {
-        try {
-            val startDate = LocalDate.of(year, month, 1).toString()
-            val endDate = LocalDate.of(year, month, 1).withDayOfMonth(
-                LocalDate.of(year, month, 1).lengthOfMonth()
-            ).toString()
+        val startDate = LocalDate.of(year, month, 1).toString()
+        val endDate = LocalDate.of(year, month, 1).withDayOfMonth(
+            LocalDate.of(year, month, 1).lengthOfMonth()
+        ).toString()
 
-            val twentyFourHoursAgo = System.currentTimeMillis() - 24 * 60 * 60 * 1000
-            matchDao.deleteExpiredMatches(twentyFourHoursAgo)
-
-            val cachedMatches = matchDao.getMatchesBetween(startDate, endDate)
-            if (cachedMatches.isNotEmpty()) {
-                Log.d("MatchRepository", "Returning matches from cache")
-                return@withContext cachedMatches.map { it.toMatch() }
-            }
-
-            val queryParams = mutableListOf(
-                "start_date=$startDate",
-                "end_date=$endDate"
-            )
-            selectedLeagues.forEach { queryParams.add("league=$it") }
-
-            val queryString = queryParams.joinToString("&")
-            val url = "https://football-calendar-backend.vercel.app/api/matches/?$queryString"
-
-            Log.d("MatchRepository", "Fetching matches for month: $url")
-
-            var response = apiService.getMatchesByUrl(url)
-            val allMatches = mutableListOf<Match>()
-            allMatches.addAll(response.results.map { it.toMatch() })
-
-            while (response.next != null) {
-                response = apiService.getMatchesByUrl(response.next!!)
-                allMatches.addAll(response.results.map { it.toMatch() })
-            }
-
-            matchDao.insertMatches(allMatches.map { it.toCachedMatch() })
-
-            return@withContext allMatches
-        } catch (e: Exception) {
-            Log.e("MatchRepository", "Error fetching matches for month", e)
-            return@withContext emptyList()
-        }
+        getMatches(
+            startDate = startDate,
+            endDate = endDate,
+            selectedLeagues = selectedLeagues
+        )
     }
 
     suspend fun getMatchesForLeagueInMonth(
@@ -124,48 +89,15 @@ class MatchRepository(
         year: Int,
         month: Int
     ): List<Match> = withContext(Dispatchers.IO) {
-        try {
-            val startDate = LocalDate.of(year, month, 1).toString()
-            val endDate = LocalDate.of(year, month, 1).withDayOfMonth(
-                LocalDate.of(year, month, 1).lengthOfMonth()
-            ).toString()
+        val startDate = LocalDate.of(year, month, 1).toString()
+        val endDate = LocalDate.of(year, month, 1).withDayOfMonth(
+            LocalDate.of(year, month, 1).lengthOfMonth()
+        ).toString()
 
-            val twentyFourHoursAgo = System.currentTimeMillis() - 24 * 60 * 60 * 1000
-            matchDao.deleteExpiredMatches(twentyFourHoursAgo)
-
-            val cachedMatches = matchDao.getMatchesBetween(startDate, endDate)
-                .filter { it.leagueId == leagueId }
-
-            if (cachedMatches.isNotEmpty()) {
-                Log.d("MatchRepository", "Returning ${cachedMatches.size} matches for league $leagueId from cache")
-                return@withContext cachedMatches.map { it.toMatch() }
-            }
-
-            val queryParams = listOf(
-                "start_date=$startDate",
-                "end_date=$endDate",
-                "league=$leagueId"
-            ).joinToString("&")
-
-            val url = "https://football-calendar-backend.vercel.app/api/matches/?$queryParams"
-
-            Log.d("MatchRepository", "Fetching matches for league $leagueId: $url")
-
-            var response = apiService.getMatchesByUrl(url)
-            val allMatches = mutableListOf<Match>()
-            allMatches.addAll(response.results.map { it.toMatch() })
-
-            while (response.next != null) {
-                response = apiService.getMatchesByUrl(response.next!!)
-                allMatches.addAll(response.results.map { it.toMatch() })
-            }
-
-            matchDao.insertMatches(allMatches.map { it.toCachedMatch() })
-
-            return@withContext allMatches
-        } catch (e: Exception) {
-            Log.e("MatchRepository", "Error fetching matches for league $leagueId", e)
-            return@withContext emptyList()
-        }
+        getMatches(
+            startDate = startDate,
+            endDate = endDate,
+            selectedLeagues = listOf(leagueId)
+        )
     }
 }

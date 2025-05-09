@@ -12,7 +12,7 @@ data class CachedMatch(
     val awayTeamId: Int,
     val awayTeamName: String,
     val date: String,
-    val time: String,
+    val time: String?,
     val scoreHome: Int?,
     val scoreAway: Int?,
     val isCancelled: Boolean,

@@ -8,7 +8,6 @@ import com.walele.footballcalendarapp.data.mappers.toCachedLeague
 import com.walele.footballcalendarapp.data.mappers.toLeague
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.*
 
 class LeagueRepository(private val apiService: ApiService, private val leagueDao: LeagueDao) {
 
@@ -29,25 +28,22 @@ class LeagueRepository(private val apiService: ApiService, private val leagueDao
     }
 
     private suspend fun fetchLeaguesFromApi(): List<League> {
-        val allLeagues = mutableListOf<League>()
-        var nextUrl: String? = "https://football-calendar-backend.vercel.app/api/leagues/"
+        return try {
+            // Richiediamo tutte le leghe senza paginazione
+            val response: LeagueResponseDto = apiService.getLeagues() // Modifica qui per il nuovo endpoint
 
-        try {
-            while (nextUrl != null) {
-                val response: LeagueResponseDto = apiService.getLeaguesByUrl(nextUrl)
-                allLeagues.addAll(response.results.map { it.toLeague() })
-                nextUrl = response.next
-            }
+            // Convertiamo la risposta in oggetti League
+            val allLeagues = response.results.map { it.toLeague() }
 
             // Salviamo le leghe nel database e aggiorniamo il timestamp
             leagueDao.insertLeagues(allLeagues.map { it.toCachedLeague() })
             leagueDao.updateLastCachedTime(System.currentTimeMillis())
 
             Log.d("LeagueRepository", "Fetched leagues: ${allLeagues.size}")
-            return allLeagues
+            allLeagues
         } catch (e: Exception) {
             Log.e("LeagueRepository", "Error fetching leagues: ${e.message}", e)
-            return emptyList()
+            emptyList()
         }
     }
 

@@ -5,7 +5,7 @@ data class Match(
     val homeTeam: Team,
     val awayTeam: Team,
     val date: String,
-    val time: String,
+    val time: String?,
     val scoreHome: Int?,
     val scoreAway: Int?,
     val isCancelled: Boolean,

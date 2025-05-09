@@ -37,7 +37,9 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             AppDatabase::class.java,
             "football-calendar-db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()  // Aggiunta della migrazione distruttiva
+            .build()
 
         val matchDao = appDatabase.matchDao()
         val leagueDao = appDatabase.leagueDao()

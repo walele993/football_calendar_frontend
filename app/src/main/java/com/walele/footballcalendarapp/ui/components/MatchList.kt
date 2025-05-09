@@ -194,14 +194,16 @@ fun MatchItemCard(match: Match) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = formattedTime,
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontFamily = InterVariableFont,
-                        fontWeight = FontWeight.W400
-                    ),
-                    color = Color(0xFF00A86B)
-                )
+                if (formattedTime != null) {
+                    Text(
+                        text = formattedTime,
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            fontFamily = InterVariableFont,
+                            fontWeight = FontWeight.W400
+                        ),
+                        color = Color(0xFF00A86B)
+                    )
+                }
                 Text(
                     text = match.league.name,
                     style = MaterialTheme.typography.labelMedium.copy(
