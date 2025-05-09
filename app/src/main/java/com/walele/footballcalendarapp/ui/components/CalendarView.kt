@@ -177,7 +177,7 @@ private fun DayCell(
     val animatedElevation by animateDpAsState(
         targetValue = if (isSelected) 4.dp else 0.dp,
         animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
+            dampingRatio = Spring.DampingRatioHighBouncy,
             stiffness = 500f
         ),
         label = "ElevationAnimation"
@@ -186,7 +186,7 @@ private fun DayCell(
     val animatedBarWidth by animateDpAsState(
         targetValue = if (isSelected) 24.dp else 0.dp,
         animationSpec = spring(
-            dampingRatio = Spring.DampingRatioLowBouncy,
+            dampingRatio = Spring.DampingRatioHighBouncy,
             stiffness = 700f
         ),
         label = "BarWidthAnimation"
@@ -195,7 +195,7 @@ private fun DayCell(
     val animatedScale by animateFloatAsState(
         targetValue = if (isSelected) 1.2f else 1f,
         animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
+            dampingRatio = Spring.DampingRatioHighBouncy,
             stiffness = Spring.StiffnessLow
         ),
         label = "ScaleAnimation"
@@ -219,7 +219,7 @@ private fun DayCell(
 
     val tilt by animateFloatAsState(
         targetValue = targetTilt,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = 0f),
+        animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy, stiffness = 0f),
         label = "Tilt"
     )
 
