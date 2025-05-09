@@ -264,12 +264,15 @@ private fun DayCell(
                     text = date.dayOfMonth.toString(),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontFamily = OnestVariableFont,
-                        fontWeight = FontWeight.W400
+                        fontWeight = when {
+                            isToday -> FontWeight.W900
+                            else -> FontWeight.W400
+                        },
                     ),
                     color = when {
-                        isToday -> Color(0xFFFF6B00)
-                        isSelected -> Color(0xFF1e1e1e)
-                        isCurrentMonth -> Color(0xFF1e1e1e)
+                        isToday -> Color(0xFFFA2D48)
+                        isSelected -> Color(0xFF383838)
+                        isCurrentMonth -> Color(0xFF383838)
                         else -> Color(0xFFB0B0B0)
                     }
                 )

@@ -49,7 +49,7 @@ fun YearlyCalendarView(
             ) {
                 Text(
                     text = ym.month.getDisplayName(TextStyle.SHORT, Locale.getDefault()).uppercase(),
-                    style = MaterialTheme.typography.labelMedium.copy(
+                    style = MaterialTheme.typography.labelLarge.copy(
                         fontFamily = OnestVariableFont,
                         fontWeight = FontWeight.W400
                     ),
@@ -108,8 +108,8 @@ private fun MiniCalendarGrid(
                                     fontWeight = FontWeight.W400
                                 ),
                                 color = when {
-                                    isToday -> Color(0xFFFF5722) // Colore per oggi
-                                    else -> Color(0xFF1e1e1e)
+                                    isToday -> Color(0xFFFA2D48) // Colore per oggi
+                                    else -> Color(0xFF383838)
                                 }
                             )
                         }

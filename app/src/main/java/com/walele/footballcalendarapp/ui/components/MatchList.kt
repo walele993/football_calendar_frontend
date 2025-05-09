@@ -79,7 +79,7 @@ fun MatchList(
                     fontFamily = OnestVariableFont,
                     fontWeight = FontWeight.W900
                 ),
-                color = Color(0xFF1e1e1e),
+                color = Color(0xFF383838),
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(
@@ -163,8 +163,8 @@ fun MatchList(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 items(sortedMatches.size) { index ->
-                    MatchItemRow(sortedMatches[index])
-                    Spacer(modifier = Modifier.height(4.dp))
+                    // Pass the boolean indicating if it's the last element
+                    MatchItemRow(match = sortedMatches[index], isLastItem = index == sortedMatches.size - 1)
                 }
 
                 item {
@@ -175,9 +175,8 @@ fun MatchList(
     }
 }
 
-
 @Composable
-fun MatchItemRow(match: Match) {
+fun MatchItemRow(match: Match, isLastItem: Boolean) {
     val formattedTime = runCatching {
         LocalTime.parse(match.time).format(DateTimeFormatter.ofPattern("HH:mm"))
     }.getOrElse { match.time }
@@ -187,55 +186,70 @@ fun MatchItemRow(match: Match) {
             .fillMaxWidth()
             .padding(vertical = 12.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (formattedTime != null) {
+        // Content above the divider
+        Column {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (formattedTime != null) {
+                    Text(
+                        text = formattedTime,
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            fontFamily = InterVariableFont,
+                            fontWeight = FontWeight.W400
+                        ),
+                        color = Color(0xFF00A86B)
+                    )
+                }
+
                 Text(
-                    text = formattedTime,
-                    style = MaterialTheme.typography.labelLarge.copy(
+                    text = match.matchday,
+                    style = MaterialTheme.typography.labelMedium.copy(
                         fontFamily = InterVariableFont,
                         fontWeight = FontWeight.W400
                     ),
-                    color = Color(0xFF00A86B)
+                    color = Color(0xFF757575)
                 )
             }
+
+            Spacer(modifier = Modifier.height(2.dp))
 
             Text(
-                text = match.matchday,
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontFamily = InterVariableFont,
+                text = "${match.homeTeam.name} vs ${match.awayTeam.name}",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = OnestVariableFont,
                     fontWeight = FontWeight.W400
                 ),
-                color = Color(0xFF757575)
+                color = Color(0xFF383838)
             )
+
+            match.scoreHome?.let { scoreHome ->
+                match.scoreAway?.let { scoreAway ->
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "$scoreHome - $scoreAway",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontFamily = InterVariableFont,
+                            fontWeight = FontWeight.W400
+                        ),
+                        color = Color(0xFF1e1e1e)
+                    )
+                }
+            }
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        // Spacer to push the divider down
+        Spacer(modifier = Modifier.height(24.dp))
 
-        Text(
-            text = "${match.homeTeam.name} vs ${match.awayTeam.name}",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontFamily = OnestVariableFont,
-                fontWeight = FontWeight.W400
-            ),
-            color = Color(0xFF1e1e1e)
-        )
-
-        match.scoreHome?.let { scoreHome ->
-            match.scoreAway?.let { scoreAway ->
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = "$scoreHome - $scoreAway",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontFamily = InterVariableFont,
-                        fontWeight = FontWeight.W400
-                    ),
-                    color = Color(0xFF1e1e1e)
-                )
-            }
+        // Divider (Only show it if it's not the last item)
+        if (!isLastItem) {
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 0.5.dp,
+                color = Color(0xFFB0B0B0)
+            )
         }
     }
 }

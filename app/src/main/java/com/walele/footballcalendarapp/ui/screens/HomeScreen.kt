@@ -113,7 +113,7 @@ fun HomeScreen(
                                     fontFamily = OnestVariableFont,
                                     fontWeight = FontWeight.W900
                                 ),
-                                color = Color(0xFF1e1e1e)
+                                color = Color(0xFF383838)
                             )
                         }
 
@@ -137,7 +137,7 @@ fun HomeScreen(
                                             style = MaterialTheme.typography.bodyMedium.copy(
                                                 fontFamily = OnestVariableFont,
                                                 fontWeight = FontWeight.W400,
-                                                color = if (isSelected) Color(0xFF00A86B) else Color(0xFF1e1e1e)
+                                                color = if (isSelected) Color(0xFF00A86B) else Color(0xFF383838)
                                             ),
                                         )
                                         if (isSelected) {
