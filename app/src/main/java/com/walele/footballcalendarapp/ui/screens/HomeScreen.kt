@@ -81,6 +81,9 @@ fun HomeScreen(
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
+    // Recupera il nome della lega selezionata
+    val selectedLeagueName = leagues.value.find { it.id == selectedLeagueId.value }?.name
+
     // Sincronizza il pager con la data selezionata
     LaunchedEffect(selectedDate.value) {
         val targetYearMonth = YearMonth.from(selectedDate.value)
@@ -290,6 +293,7 @@ fun HomeScreen(
                                 selectedDate = selectedDate.value,
                                 bottomPadding = bottomPadding,
                                 leagueSelected = selectedLeagueId.value != null,
+                                selectedLeagueName = selectedLeagueName
                             )
                         }
                     }

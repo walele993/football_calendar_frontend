@@ -46,7 +46,8 @@ fun MatchList(
     matches: List<Match>,
     selectedDate: LocalDate,
     bottomPadding: Dp,
-    leagueSelected: Boolean = false
+    leagueSelected: Boolean = false,
+    selectedLeagueName: String?
 ) {
     val listState = rememberLazyListState()
     val today = LocalDate.now()
@@ -92,16 +93,18 @@ fun MatchList(
             )
         }
 
-        if (matches.isNotEmpty()) {
-            Text(
-                text = matches.first().league.name,
-                style = typography.headlineSmall.copy(
-                    fontFamily = OnestVariableFont,
-                    fontWeight = FontWeight.W900
-                ),
-                color = Color(0xFF00A86B),
-                modifier = Modifier.padding(start = 16.dp)
-            )
+        if (leagueSelected) {
+            if (selectedLeagueName != null) {
+                Text(
+                    text = selectedLeagueName,
+                    style = typography.headlineSmall.copy(
+                        fontFamily = OnestVariableFont,
+                        fontWeight = FontWeight.W900
+                    ),
+                    color = Color(0xFF00A86B),
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
         }
 
         if (sortedMatches.isEmpty()) {
