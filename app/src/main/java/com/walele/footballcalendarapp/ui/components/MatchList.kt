@@ -72,12 +72,13 @@ fun MatchList(
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Header
-        Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
+        Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 4.dp)) {
             Text(
                 text = label.first,
                 style = typography.headlineSmall.copy(
                     fontFamily = OnestVariableFont,
-                    fontWeight = FontWeight.W900,),
+                    fontWeight = FontWeight.W900
+                ),
                 color = Color(0xFF1e1e1e),
                 modifier = Modifier.padding(end = 8.dp)
             )
@@ -85,8 +86,21 @@ fun MatchList(
                 text = label.second,
                 style = typography.headlineSmall.copy(
                     fontFamily = OnestVariableFont,
-                    fontWeight = FontWeight.W900,),
+                    fontWeight = FontWeight.W900
+                ),
                 color = Color(0xFFB0B0B0)
+            )
+        }
+
+        if (matches.isNotEmpty()) {
+            Text(
+                text = matches.first().league.name,
+                style = typography.headlineSmall.copy(
+                    fontFamily = OnestVariableFont,
+                    fontWeight = FontWeight.W900
+                ),
+                color = Color(0xFF00A86B),
+                modifier = Modifier.padding(start = 16.dp)
             )
         }
 
@@ -149,7 +163,7 @@ fun MatchList(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 items(sortedMatches.size) { index ->
-                    MatchItemCard(sortedMatches[index])
+                    MatchItemRow(sortedMatches[index])
                     Spacer(modifier = Modifier.height(4.dp))
                 }
 
@@ -163,77 +177,64 @@ fun MatchList(
 
 
 @Composable
-fun MatchItemCard(match: Match) {
+fun MatchItemRow(match: Match) {
     val formattedTime = runCatching {
         LocalTime.parse(match.time).format(DateTimeFormatter.ofPattern("HH:mm"))
     }.getOrElse { match.time }
 
-    Card(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-            .shadow(elevation = 4.dp, shape = RoundedCornerShape(20.dp))
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFFFFFFFF), Color(0xFFF0F0F0))
-                ),
-                shape = RoundedCornerShape(20.dp)
-            )
-            .clip(RoundedCornerShape(20.dp))
-            .animateContentSize(),
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+            .padding(vertical = 12.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (formattedTime != null) {
-                    Text(
-                        text = formattedTime,
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            fontFamily = InterVariableFont,
-                            fontWeight = FontWeight.W400
-                        ),
-                        color = Color(0xFF00A86B)
-                    )
-                }
+            if (formattedTime != null) {
                 Text(
-                    text = match.league.name,
-                    style = MaterialTheme.typography.labelMedium.copy(
+                    text = formattedTime,
+                    style = MaterialTheme.typography.labelLarge.copy(
                         fontFamily = InterVariableFont,
                         fontWeight = FontWeight.W400
                     ),
-                    color = Color(0xFF757575)
+                    color = Color(0xFF00A86B)
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
+
             Text(
-                text = "${match.homeTeam.name} vs ${match.awayTeam.name}",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontFamily = OnestVariableFont,
+                text = match.matchday,
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontFamily = InterVariableFont,
                     fontWeight = FontWeight.W400
                 ),
-                color = Color(0xFF1e1e1e)
+                color = Color(0xFF757575)
             )
-            match.scoreHome?.let { scoreHome ->
-                match.scoreAway?.let { scoreAway ->
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "$scoreHome - $scoreAway",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontFamily = InterVariableFont,
-                            fontWeight = FontWeight.W400
-                        ),
-                        color = Color(0xFF1e1e1e)
-                    )
-                }
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = "${match.homeTeam.name} vs ${match.awayTeam.name}",
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontFamily = OnestVariableFont,
+                fontWeight = FontWeight.W400
+            ),
+            color = Color(0xFF1e1e1e)
+        )
+
+        match.scoreHome?.let { scoreHome ->
+            match.scoreAway?.let { scoreAway ->
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "$scoreHome - $scoreAway",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontFamily = InterVariableFont,
+                        fontWeight = FontWeight.W400
+                    ),
+                    color = Color(0xFF1e1e1e)
+                )
             }
         }
     }

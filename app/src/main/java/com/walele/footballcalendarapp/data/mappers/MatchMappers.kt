@@ -20,6 +20,7 @@ fun Match.toCachedMatch(): CachedMatch {
         isCancelled = isCancelled,
         leagueId = league.id,
         leagueName = league.name,
+        matchday = matchday,
         cachedAt = System.currentTimeMillis()
     )
 }
@@ -34,6 +35,7 @@ fun CachedMatch.toMatch(): Match {
         scoreHome = scoreHome,
         scoreAway = scoreAway,
         isCancelled = isCancelled,
+        matchday = matchday,
         league = League(leagueId, leagueName)
     )
 }
@@ -48,6 +50,7 @@ fun MatchDto.toMatch(): Match {
         scoreHome = this.score_home,
         scoreAway = this.score_away,
         isCancelled = this.is_cancelled,
+        matchday = matchday,
         league = League(this.league.id, this.league.name)
     )
 }

@@ -2,6 +2,7 @@ package com.walele.footballcalendarapp.network
 
 import com.walele.footballcalendarapp.network.models.MatchResponseDto
 import com.walele.footballcalendarapp.network.models.LeagueResponseDto
+import com.walele.footballcalendarapp.network.models.LeagueDto
 import com.walele.footballcalendarapp.network.models.MatchDto
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -22,5 +23,5 @@ interface ApiService {
     suspend fun getMatchesByUrl(@Url url: String): MatchResponseDto
 
     @GET("api/leagues-mongo/")
-    suspend fun getLeagues(): LeagueResponseDto
+    suspend fun getLeagues(): List<LeagueDto>
 }

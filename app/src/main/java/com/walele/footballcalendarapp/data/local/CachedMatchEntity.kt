@@ -18,5 +18,6 @@ data class CachedMatch(
     val isCancelled: Boolean,
     val leagueId: Int,
     val leagueName: String,
+    val matchday: String,
     val cachedAt: Long // timestamp
 )

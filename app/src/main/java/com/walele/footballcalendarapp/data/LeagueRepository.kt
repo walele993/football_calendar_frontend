@@ -3,7 +3,7 @@ package com.walele.footballcalendarapp.data
 import android.util.Log
 import com.walele.footballcalendarapp.network.ApiService
 import com.walele.footballcalendarapp.data.local.LeagueDao
-import com.walele.footballcalendarapp.network.models.LeagueResponseDto
+import com.walele.footballcalendarapp.network.models.LeagueDto
 import com.walele.footballcalendarapp.data.mappers.toCachedLeague
 import com.walele.footballcalendarapp.data.mappers.toLeague
 import kotlinx.coroutines.Dispatchers
@@ -29,18 +29,18 @@ class LeagueRepository(private val apiService: ApiService, private val leagueDao
 
     private suspend fun fetchLeaguesFromApi(): List<League> {
         return try {
-            // Richiediamo tutte le leghe senza paginazione
-            val response: LeagueResponseDto = apiService.getLeagues() // Modifica qui per il nuovo endpoint
+            // Richiediamo tutte le leghe direttamente come lista
+            val allLeagues: List<LeagueDto> = apiService.getLeagues()
 
-            // Convertiamo la risposta in oggetti League
-            val allLeagues = response.results.map { it.toLeague() }
+            // Convertiamo la lista di LeagueDto in League
+            val mappedLeagues = allLeagues.map { it.toLeague() }
 
             // Salviamo le leghe nel database e aggiorniamo il timestamp
-            leagueDao.insertLeagues(allLeagues.map { it.toCachedLeague() })
+            leagueDao.insertLeagues(mappedLeagues.map { it.toCachedLeague() })
             leagueDao.updateLastCachedTime(System.currentTimeMillis())
 
-            Log.d("LeagueRepository", "Fetched leagues: ${allLeagues.size}")
-            allLeagues
+            Log.d("LeagueRepository", "Fetched leagues: ${mappedLeagues.size}")
+            mappedLeagues
         } catch (e: Exception) {
             Log.e("LeagueRepository", "Error fetching leagues: ${e.message}", e)
             emptyList()

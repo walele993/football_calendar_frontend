@@ -9,5 +9,6 @@ data class Match(
     val scoreHome: Int?,
     val scoreAway: Int?,
     val isCancelled: Boolean,
-    val league: League
+    val league: League,
+    val matchday: String
 )

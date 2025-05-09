@@ -9,5 +9,6 @@ data class MatchDto(
     val score_home: Int?,
     val score_away: Int?,
     val is_cancelled: Boolean,
-    val league: LeagueDto
+    val league: LeagueDto,
+    val matchday: String
 )
