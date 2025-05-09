@@ -46,7 +46,7 @@ fun calculateOpacity(matchCount: Int, maxMatchCount: Int): Float {
 val SquircleShape: Shape = GenericShape { size: Size, _: LayoutDirection ->
     val width = size.width
     val height = size.height
-    val roundness = 0.45f // tra 0 (rettangolo) e 1 (cerchio)
+    val roundness = 0.35f // tra 0 (rettangolo) e 1 (cerchio)
 
     val path = Path()
     val rx = width * roundness
