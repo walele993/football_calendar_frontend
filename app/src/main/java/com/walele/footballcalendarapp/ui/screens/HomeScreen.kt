@@ -139,7 +139,7 @@ fun HomeScreen(
                                             text = league.name,
                                             style = MaterialTheme.typography.bodyMedium.copy(
                                                 fontFamily = OnestVariableFont,
-                                                fontWeight = FontWeight.W400,
+                                                fontWeight = if (isSelected) FontWeight.W900 else FontWeight.W400,
                                                 color = if (isSelected) Color(0xFF00A86B) else Color(0xFF383838)
                                             ),
                                         )

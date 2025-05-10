@@ -66,7 +66,9 @@ fun TopBar(
                 Icons.Outlined.TravelExplore,
                 contentDescription = "Select League",
                 tint = Color(0xFF00A86B),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+
             )
         }
     }

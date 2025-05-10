@@ -102,7 +102,7 @@ fun MatchList(
                 ),
                 color = Color(0xFF00A86B),
                 modifier = Modifier
-                    .padding(start = 16.dp, bottom = 16.dp)
+                    .padding(start = 16.dp, bottom = 24.dp)
             )
         }
 
