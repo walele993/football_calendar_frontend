@@ -93,18 +93,17 @@ fun MatchList(
             )
         }
 
-        if (leagueSelected) {
-            if (selectedLeagueName != null) {
-                Text(
-                    text = selectedLeagueName,
-                    style = typography.headlineSmall.copy(
-                        fontFamily = OnestVariableFont,
-                        fontWeight = FontWeight.W900
-                    ),
-                    color = Color(0xFF00A86B),
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-            }
+        if (leagueSelected && selectedLeagueName != null) {
+            Text(
+                text = selectedLeagueName,
+                style = typography.headlineSmall.copy(
+                    fontFamily = OnestVariableFont,
+                    fontWeight = FontWeight.W900
+                ),
+                color = Color(0xFF00A86B),
+                modifier = Modifier
+                    .padding(start = 16.dp, bottom = 16.dp)
+            )
         }
 
         if (sortedMatches.isEmpty()) {

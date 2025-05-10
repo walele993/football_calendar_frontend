@@ -164,7 +164,7 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(0xFFF2F2F2))
+                        .background(Color(0xFFF8F8FF))
                         .padding(WindowInsets.systemBars.only(WindowInsetsSides.Top).asPaddingValues())
                 ) {
                     Column(
