@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,7 +31,7 @@ fun YearlyCalendarView(
     onDateSelected: (LocalDate, Boolean) -> Unit,
 ) {
     val year = selectedDate.year
-    val months = (1..12).map { YearMonth.of(year, it) }
+    val months = remember(year) { (1..12).map { YearMonth.of(year, it) } }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -68,11 +69,13 @@ private fun MiniCalendarGrid(
 ) {
     val today = LocalDate.now()
     val firstDayOfMonth = yearMonth.atDay(1)
-    val firstDayOfWeek = (firstDayOfMonth.dayOfWeek.value % 7) // Sunday = 0, Monday = 1, ..., Saturday = 6
+    val firstDayOfWeek = (firstDayOfMonth.dayOfWeek.value % 7)
     val daysInMonth = yearMonth.lengthOfMonth()
 
-    val currentMonthDays = (1..daysInMonth).map {
-        LocalDate.of(yearMonth.year, yearMonth.month, it)
+    val currentMonthDays = remember(yearMonth) {
+        (1..daysInMonth).map {
+            LocalDate.of(yearMonth.year, yearMonth.month, it)
+        }
     }
 
     val totalCells = firstDayOfWeek + daysInMonth
@@ -81,13 +84,12 @@ private fun MiniCalendarGrid(
     Column(modifier = Modifier.fillMaxWidth()) {
         for (row in 0 until rows) {
             Row(modifier = Modifier.fillMaxWidth()) {
-                // Aggiungi gli spazi vuoti prima dei giorni effettivi
                 for (col in 0..6) {
                     val index = row * 7 + col
                     val date = if (index >= firstDayOfWeek && index < firstDayOfWeek + daysInMonth) {
                         currentMonthDays[index - firstDayOfWeek]
                     } else {
-                        null // Nessun giorno in questo spazio
+                        null
                     }
 
                     Box(
@@ -108,7 +110,7 @@ private fun MiniCalendarGrid(
                                     fontWeight = FontWeight.W400
                                 ),
                                 color = when {
-                                    isToday -> Color(0xFFFA2D48) // Colore per oggi
+                                    isToday -> Color(0xFFFA2D48)
                                     else -> Color(0xFF383838)
                                 }
                             )

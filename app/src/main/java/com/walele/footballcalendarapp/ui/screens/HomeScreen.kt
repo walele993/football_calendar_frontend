@@ -6,6 +6,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -189,8 +191,8 @@ fun HomeScreen(
                         AnimatedContent(
                             targetState = isYearlyView.value,
                             transitionSpec = {
-                                (fadeIn() + scaleIn(initialScale = 0.9f)) togetherWith
-                                        (fadeOut() + scaleOut(targetScale = 0.9f))
+                                (fadeIn() + scaleIn(initialScale = 0.9f) + slideInVertically(initialOffsetY = { it })) togetherWith
+                                        (fadeOut() + scaleOut(targetScale = 0.9f) + slideOutVertically(targetOffsetY = { it }))
                             },
                             label = "CalendarSwitch"
                         ) { showYear ->
