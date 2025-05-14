@@ -96,7 +96,7 @@ fun TopBar(
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontFamily = OnestVariableFont,
                             fontWeight = FontWeight.W900,
-                            color = Color(0xFF383838)
+                            color = Color(0xFF2a1e17)
                         ),
                         modifier = modifier
                     )
@@ -104,7 +104,7 @@ fun TopBar(
                 Spacer(modifier = Modifier.width(8.dp))
             }
 
-            val yearColor = if (isYearlyView) Color(0xFF383838) else Color(0xFFB0B0B0)
+            val yearColor = if (isYearlyView) Color(0xFF2a1e17) else Color(0xFFc2a189)
 
             BouncyClickable(onClick = onMonthClick) { modifier ->
                 Text(
@@ -123,7 +123,7 @@ fun TopBar(
             Icon(
                 imageVector = Icons.Outlined.TravelExplore,
                 contentDescription = "Select League",
-                tint = Color(0xFF383838),
+                tint = Color(0xFF2a1e17),
                 modifier = modifier.size(32.dp)
             )
         }

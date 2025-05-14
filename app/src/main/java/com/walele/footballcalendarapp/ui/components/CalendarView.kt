@@ -137,7 +137,7 @@ fun CalendarView(
                         fontFamily = OnestVariableFont,
                         fontWeight = FontWeight.W400
                     ),
-                    color = Color(0xFFB0B0B0)
+                    color = Color(0xFFc2a189)
                 )
             }
         }
@@ -271,9 +271,9 @@ private fun DayCell(
                     ),
                     color = when {
                         isToday -> Color(0xFFFA2D48)
-                        isSelected -> Color(0xFF383838)
-                        isCurrentMonth -> Color(0xFF383838)
-                        else -> Color(0xFFB0B0B0)
+                        isSelected -> Color(0xFF2a1e17)
+                        isCurrentMonth -> Color(0xFF2a1e17)
+                        else -> Color(0xFFc2a189)
                     }
                 )
 

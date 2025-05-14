@@ -52,7 +52,8 @@ fun YearlyCalendarView(
                     text = ym.month.getDisplayName(TextStyle.SHORT, Locale.getDefault()).uppercase(),
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontFamily = OnestVariableFont,
-                        fontWeight = FontWeight.W400
+                        fontWeight = FontWeight.W400,
+                        color = Color(0xFF2a1e17)
                     ),
                 )
                 MiniCalendarGrid(ym, selectedDate, onDateSelected)
@@ -111,7 +112,7 @@ private fun MiniCalendarGrid(
                                 ),
                                 color = when {
                                     isToday -> Color(0xFFFA2D48)
-                                    else -> Color(0xFF383838)
+                                    else -> Color(0xFF2a1e17)
                                 }
                             )
                         }

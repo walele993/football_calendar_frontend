@@ -80,7 +80,7 @@ fun MatchList(
                     fontFamily = OnestVariableFont,
                     fontWeight = FontWeight.W900
                 ),
-                color = Color(0xFF383838),
+                color = Color(0xFF2a1e17),
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(
@@ -89,7 +89,7 @@ fun MatchList(
                     fontFamily = OnestVariableFont,
                     fontWeight = FontWeight.W900
                 ),
-                color = Color(0xFFB0B0B0)
+                color = Color(0xFFc2a189)
             )
         }
 
@@ -137,7 +137,7 @@ fun MatchList(
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = Color(0xFFB0B0B0),
+                            tint = Color(0xFFc2a189),
                             modifier = iconModifier
                         )
 
@@ -149,7 +149,7 @@ fun MatchList(
                                 fontFamily = OnestVariableFont,
                                 fontWeight = FontWeight.W500
                             ),
-                            color = Color(0xFFB0B0B0)
+                            color = Color(0xFFc2a189)
                         )
                     }
                 }
@@ -212,7 +212,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
                         fontFamily = InterVariableFont,
                         fontWeight = FontWeight.W400
                     ),
-                    color = Color(0xFF757575)
+                    color = Color(0xFFc2a189)
                 )
             }
 
@@ -224,7 +224,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
                     fontFamily = OnestVariableFont,
                     fontWeight = FontWeight.W400
                 ),
-                color = Color(0xFF383838)
+                color = Color(0xFF2a1e17)
             )
 
             match.scoreHome?.let { scoreHome ->
@@ -250,7 +250,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 0.5.dp,
-                color = Color(0xFFB0B0B0)
+                color = Color(0xFFc2a189)
             )
         }
     }
