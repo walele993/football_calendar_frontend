@@ -17,6 +17,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.walele.footballcalendarapp.ui.theme.InterVariableFont
 import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
+import com.walele.footballcalendarapp.ui.theme.OrangeAccent
+import com.walele.footballcalendarapp.ui.theme.PrimaryTextLight
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
@@ -111,8 +113,8 @@ private fun MiniCalendarGrid(
                                     fontWeight = FontWeight.W400
                                 ),
                                 color = when {
-                                    isToday -> Color(0xFFc75c4a)
-                                    else -> Color(0xFF2a1e17)
+                                    isToday -> OrangeAccent
+                                    else -> PrimaryTextLight
                                 }
                             )
                         }

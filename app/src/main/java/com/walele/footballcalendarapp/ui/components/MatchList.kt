@@ -38,8 +38,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.walele.footballcalendarapp.ui.theme.GreenAccent
 import com.walele.footballcalendarapp.ui.theme.InterVariableFont
 import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
+import com.walele.footballcalendarapp.ui.theme.OrangeAccent
+import com.walele.footballcalendarapp.ui.theme.SecondaryTextLight
 
 @Composable
 fun MatchList(
@@ -89,7 +92,7 @@ fun MatchList(
                     fontFamily = OnestVariableFont,
                     fontWeight = FontWeight.W900
                 ),
-                color = Color(0xFFc2a189)
+                color = SecondaryTextLight
             )
         }
 
@@ -100,7 +103,7 @@ fun MatchList(
                     fontFamily = OnestVariableFont,
                     fontWeight = FontWeight.W900
                 ),
-                color = Color(0xFF768c6a),
+                color = GreenAccent,
                 modifier = Modifier
                     .padding(start = 16.dp, bottom = 24.dp)
             )
@@ -137,7 +140,7 @@ fun MatchList(
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = Color(0xFFc2a189),
+                            tint = SecondaryTextLight,
                             modifier = iconModifier
                         )
 
@@ -149,7 +152,7 @@ fun MatchList(
                                 fontFamily = OnestVariableFont,
                                 fontWeight = FontWeight.W500
                             ),
-                            color = Color(0xFFc2a189)
+                            color = SecondaryTextLight
                         )
                     }
                 }
@@ -202,7 +205,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
                             fontFamily = InterVariableFont,
                             fontWeight = FontWeight.W400
                         ),
-                        color = Color(0xFF768c6a)
+                        color = GreenAccent
                     )
                 }
 
@@ -212,7 +215,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
                         fontFamily = InterVariableFont,
                         fontWeight = FontWeight.W400
                     ),
-                    color = Color(0xFFc75c4a)
+                    color = OrangeAccent
                 )
             }
 
@@ -250,7 +253,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 0.5.dp,
-                color = Color(0xFFc2a189)
+                color = SecondaryTextLight
             )
         }
     }

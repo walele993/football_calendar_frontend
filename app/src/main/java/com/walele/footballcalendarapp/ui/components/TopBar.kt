@@ -20,6 +20,8 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.ui.text.font.FontWeight
+import com.walele.footballcalendarapp.ui.theme.PrimaryTextLight
+import com.walele.footballcalendarapp.ui.theme.SecondaryTextLight
 
 @Composable
 fun BouncyClickable(
@@ -104,7 +106,7 @@ fun TopBar(
                 Spacer(modifier = Modifier.width(8.dp))
             }
 
-            val yearColor = if (isYearlyView) Color(0xFF2a1e17) else Color(0xFFc2a189)
+            val yearColor = if (isYearlyView) PrimaryTextLight else SecondaryTextLight
 
             BouncyClickable(onClick = onMonthClick) { modifier ->
                 Text(

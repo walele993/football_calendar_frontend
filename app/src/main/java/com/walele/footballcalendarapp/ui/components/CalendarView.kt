@@ -34,7 +34,11 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.font.FontWeight
+import com.walele.footballcalendarapp.ui.theme.GreenAccent
 import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
+import com.walele.footballcalendarapp.ui.theme.OrangeAccent
+import com.walele.footballcalendarapp.ui.theme.PrimaryTextLight
+import com.walele.footballcalendarapp.ui.theme.SecondaryTextLight
 import kotlin.math.sin
 
 fun calculateOpacity(matchCount: Int, maxMatchCount: Int): Float {
@@ -137,7 +141,7 @@ fun CalendarView(
                         fontFamily = OnestVariableFont,
                         fontWeight = FontWeight.W400
                     ),
-                    color = Color(0xFFc2a189)
+                    color = SecondaryTextLight
                 )
             }
         }
@@ -172,7 +176,7 @@ private fun DayCell(
     maxMatchCount: Int,
     onClick: () -> Unit
 ) {
-    val selectionColor = Color(0xFF768c6a)
+    val selectionColor = GreenAccent
 
     val animatedElevation by animateDpAsState(
         targetValue = if (isSelected) 4.dp else 0.dp,
@@ -237,7 +241,7 @@ private fun DayCell(
                 .background(
                     color = if (matchCount > 0) {
                         val opacity = calculateOpacity(matchCount, maxMatchCount)
-                        Color(0xFF768c6a).copy(alpha = opacity)
+                        GreenAccent.copy(alpha = opacity)
                     } else {
                         Color.Transparent
                     },
@@ -270,10 +274,10 @@ private fun DayCell(
                         },
                     ),
                     color = when {
-                        isToday -> Color(0xFFc75c4a)
-                        isSelected -> Color(0xFF2a1e17)
-                        isCurrentMonth -> Color(0xFF2a1e17)
-                        else -> Color(0xFFc2a189)
+                        isToday -> OrangeAccent
+                        isSelected -> PrimaryTextLight
+                        isCurrentMonth -> PrimaryTextLight
+                        else -> SecondaryTextLight
                     }
                 )
 

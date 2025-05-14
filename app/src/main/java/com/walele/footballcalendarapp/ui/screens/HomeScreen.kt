@@ -36,8 +36,11 @@ import com.walele.footballcalendarapp.ui.components.CalendarView
 import com.walele.footballcalendarapp.ui.components.MatchList
 import com.walele.footballcalendarapp.ui.components.TopBar
 import com.walele.footballcalendarapp.ui.components.YearlyCalendarView
+import com.walele.footballcalendarapp.ui.theme.BackgroundLight
+import com.walele.footballcalendarapp.ui.theme.GreenAccent
 import com.walele.footballcalendarapp.ui.theme.InterVariableFont
 import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
+import com.walele.footballcalendarapp.ui.theme.PrimaryTextLight
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
@@ -100,11 +103,13 @@ fun HomeScreen(
             drawerState = drawerState,
             gesturesEnabled = drawerState.isOpen,
             drawerContent = {
-                ModalDrawerSheet {
+                ModalDrawerSheet(
+                    modifier = Modifier.background(BackgroundLight)
+                ) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 24.dp)
+                            .padding(horizontal = 24.dp),
                     ) {
                         Box(
                             modifier = Modifier
@@ -142,7 +147,7 @@ fun HomeScreen(
                                             style = MaterialTheme.typography.bodyMedium.copy(
                                                 fontFamily = OnestVariableFont,
                                                 fontWeight = if (isSelected) FontWeight.W900 else FontWeight.W400,
-                                                color = if (isSelected) Color(0xFF768c6a) else Color(0xFF2a1e17)
+                                                color = if (isSelected) GreenAccent else PrimaryTextLight
                                             ),
                                         )
                                         if (isSelected) {
@@ -150,7 +155,7 @@ fun HomeScreen(
                                             Box(
                                                 modifier = Modifier
                                                     .size(8.dp)
-                                                    .background(color = Color(0xFF768c6a), shape = CircleShape)
+                                                    .background(color = GreenAccent, shape = CircleShape)
                                             )
                                         }
                                     }
@@ -166,7 +171,7 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(0xFFf4ede8))
+                        .background(BackgroundLight)
                         .padding(WindowInsets.systemBars.only(WindowInsetsSides.Top).asPaddingValues())
                 ) {
                     Column(
