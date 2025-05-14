@@ -111,7 +111,7 @@ private fun MiniCalendarGrid(
                                     fontWeight = FontWeight.W400
                                 ),
                                 color = when {
-                                    isToday -> Color(0xFFFA2D48)
+                                    isToday -> Color(0xFFc75c4a)
                                     else -> Color(0xFF2a1e17)
                                 }
                             )

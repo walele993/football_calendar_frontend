@@ -100,7 +100,7 @@ fun MatchList(
                     fontFamily = OnestVariableFont,
                     fontWeight = FontWeight.W900
                 ),
-                color = Color(0xFF00A86B),
+                color = Color(0xFF768c6a),
                 modifier = Modifier
                     .padding(start = 16.dp, bottom = 24.dp)
             )
@@ -202,7 +202,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
                             fontFamily = InterVariableFont,
                             fontWeight = FontWeight.W400
                         ),
-                        color = Color(0xFF00A86B)
+                        color = Color(0xFF768c6a)
                     )
                 }
 
@@ -212,7 +212,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
                         fontFamily = InterVariableFont,
                         fontWeight = FontWeight.W400
                     ),
-                    color = Color(0xFFc2a189)
+                    color = Color(0xFFc75c4a)
                 )
             }
 

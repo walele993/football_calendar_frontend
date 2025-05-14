@@ -172,7 +172,7 @@ private fun DayCell(
     maxMatchCount: Int,
     onClick: () -> Unit
 ) {
-    val selectionColor = Color(0xFF00A86B) // Arancione intenso
+    val selectionColor = Color(0xFF768c6a)
 
     val animatedElevation by animateDpAsState(
         targetValue = if (isSelected) 4.dp else 0.dp,
@@ -237,7 +237,7 @@ private fun DayCell(
                 .background(
                     color = if (matchCount > 0) {
                         val opacity = calculateOpacity(matchCount, maxMatchCount)
-                        Color(0xFF00A86B).copy(alpha = opacity)
+                        Color(0xFF768c6a).copy(alpha = opacity)
                     } else {
                         Color.Transparent
                     },
@@ -270,7 +270,7 @@ private fun DayCell(
                         },
                     ),
                     color = when {
-                        isToday -> Color(0xFFFA2D48)
+                        isToday -> Color(0xFFc75c4a)
                         isSelected -> Color(0xFF2a1e17)
                         isCurrentMonth -> Color(0xFF2a1e17)
                         else -> Color(0xFFc2a189)

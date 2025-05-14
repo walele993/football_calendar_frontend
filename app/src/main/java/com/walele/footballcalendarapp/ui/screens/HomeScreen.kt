@@ -142,7 +142,7 @@ fun HomeScreen(
                                             style = MaterialTheme.typography.bodyMedium.copy(
                                                 fontFamily = OnestVariableFont,
                                                 fontWeight = if (isSelected) FontWeight.W900 else FontWeight.W400,
-                                                color = if (isSelected) Color(0xFF00A86B) else Color(0xFF2a1e17)
+                                                color = if (isSelected) Color(0xFF768c6a) else Color(0xFF2a1e17)
                                             ),
                                         )
                                         if (isSelected) {
@@ -150,7 +150,7 @@ fun HomeScreen(
                                             Box(
                                                 modifier = Modifier
                                                     .size(8.dp)
-                                                    .background(color = Color(0xFF00A86B), shape = CircleShape)
+                                                    .background(color = Color(0xFF768c6a), shape = CircleShape)
                                             )
                                         }
                                     }
