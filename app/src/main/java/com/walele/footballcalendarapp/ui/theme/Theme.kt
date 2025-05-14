@@ -12,12 +12,12 @@ import androidx.compose.ui.text.font.FontWeight
 import com.walele.footballcalendar.R
 
 // Colori per il tema chiaro
-val BackgroundLight = Color(0xFFf4ede8) // Bianco
-val PrimaryTextLight = Color(0xFF121212) // Quasi nero
-val SecondaryTextLight = Color(0xFFc2a189) // Grigio
+val BackgroundLight = Color(0xFFF8F9FA) // Grigio chiarissimo, quasi bianco
+val PrimaryTextLight = Color(0xFF1C1C1E) // Nero caldo
+val SecondaryTextLight = Color(0xFF6C757D) // Grigio elegante
 
-val OrangeAccent = Color(0xFFc75c4a) // Arancione intenso
-val GreenAccent = Color(0xFF768c6a) // Verde campo
+val GreenAccent = Color(0xFF007AFF) // Blu acceso stile iOS
+val OrangeAccent = Color(0xFFFF6B35) // Arancione energico
 
 // Colori per il tema scuro
 val BackgroundDark = Color(0xFF121212) // Background scuro
