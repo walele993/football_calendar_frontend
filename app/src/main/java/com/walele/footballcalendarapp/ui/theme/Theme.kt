@@ -19,9 +19,6 @@ val SecondaryTextLight = Color(0xFFc2a189) // Grigio
 val OrangeAccent = Color(0xFFc75c4a) // Arancione intenso
 val GreenAccent = Color(0xFF768c6a) // Verde campo
 
-val BlueAccent = Color(0xFF0096FF) // Azzurro
-val YellowAccent = Color(0xFFFFD600) // Giallo
-
 // Colori per il tema scuro
 val BackgroundDark = Color(0xFF121212) // Background scuro
 val PrimaryTextDark = Color(0xFFFFFFFF) // Testo chiaro
