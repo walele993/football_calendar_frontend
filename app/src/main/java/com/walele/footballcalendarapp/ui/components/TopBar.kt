@@ -98,7 +98,7 @@ fun TopBar(
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontFamily = OnestVariableFont,
                             fontWeight = FontWeight.W900,
-                            color = Color(0xFF2a1e17)
+                            color = PrimaryTextLight
                         ),
                         modifier = modifier
                     )
@@ -125,7 +125,7 @@ fun TopBar(
             Icon(
                 imageVector = Icons.Outlined.TravelExplore,
                 contentDescription = "Select League",
-                tint = Color(0xFF2a1e17),
+                tint = PrimaryTextLight,
                 modifier = modifier.size(32.dp)
             )
         }

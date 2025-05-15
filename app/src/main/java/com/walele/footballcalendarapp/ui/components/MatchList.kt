@@ -30,6 +30,7 @@ import com.walele.footballcalendarapp.ui.theme.GreenAccent
 import com.walele.footballcalendarapp.ui.theme.InterVariableFont
 import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
 import com.walele.footballcalendarapp.ui.theme.PinkAccent
+import com.walele.footballcalendarapp.ui.theme.PrimaryTextLight
 import com.walele.footballcalendarapp.ui.theme.SecondaryTextLight
 
 @Composable
@@ -71,7 +72,7 @@ fun MatchList(
                     fontFamily = OnestVariableFont,
                     fontWeight = FontWeight.W900
                 ),
-                color = Color(0xFF2a1e17),
+                color = PrimaryTextLight,
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(
@@ -215,7 +216,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
                     fontFamily = OnestVariableFont,
                     fontWeight = FontWeight.W400
                 ),
-                color = Color(0xFF2a1e17)
+                color = PrimaryTextLight
             )
 
             match.scoreHome?.let { scoreHome ->
@@ -227,7 +228,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
                             fontFamily = InterVariableFont,
                             fontWeight = FontWeight.W400
                         ),
-                        color = Color(0xFF1e1e1e)
+                        color = PinkAccent
                     )
                 }
             }

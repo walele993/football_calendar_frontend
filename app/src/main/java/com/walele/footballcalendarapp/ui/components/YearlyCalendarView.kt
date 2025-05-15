@@ -53,7 +53,7 @@ fun YearlyCalendarView(
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontFamily = OnestVariableFont,
                         fontWeight = FontWeight.W400,
-                        color = Color(0xFF2a1e17)
+                        color = PrimaryTextLight
                     ),
                 )
                 MiniCalendarGrid(ym, selectedDate, onDateSelected)

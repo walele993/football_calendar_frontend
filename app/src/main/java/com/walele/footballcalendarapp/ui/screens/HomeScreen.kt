@@ -127,7 +127,7 @@ fun HomeScreen(
                                     fontFamily = OnestVariableFont,
                                     fontWeight = FontWeight.W900
                                 ),
-                                color = Color(0xFF2a1e17)
+                                color = PrimaryTextLight
                             )
                         }
 
