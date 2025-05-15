@@ -137,7 +137,7 @@ fun CalendarView(
                         .weight(1f)
                         .padding(vertical = 12.dp),
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodySmall.copy(
+                    style = MaterialTheme.typography.bodyLarge.copy(
                         fontFamily = OnestVariableFont,
                         fontWeight = FontWeight.W400
                     ),
