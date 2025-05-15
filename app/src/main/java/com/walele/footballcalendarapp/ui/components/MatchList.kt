@@ -194,7 +194,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
                             fontFamily = InterVariableFont,
                             fontWeight = FontWeight.W400
                         ),
-                        color = GreenAccent
+                        color = SecondaryTextLight
                     )
                 }
 
@@ -228,7 +228,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
                             fontFamily = InterVariableFont,
                             fontWeight = FontWeight.W400
                         ),
-                        color = PinkAccent
+                        color = SecondaryTextLight
                     )
                 }
             }
