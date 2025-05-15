@@ -41,6 +41,7 @@ import com.walele.footballcalendarapp.ui.theme.GreenAccent
 import com.walele.footballcalendarapp.ui.theme.InterVariableFont
 import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
 import com.walele.footballcalendarapp.ui.theme.PrimaryTextLight
+import com.walele.footballcalendarapp.ui.theme.SecondaryTextLight
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
@@ -104,7 +105,7 @@ fun HomeScreen(
             gesturesEnabled = drawerState.isOpen,
             drawerContent = {
                 ModalDrawerSheet(
-                    modifier = Modifier.background(BackgroundLight)
+                    drawerContainerColor = BackgroundLight
                 ) {
                     Column(
                         modifier = Modifier
