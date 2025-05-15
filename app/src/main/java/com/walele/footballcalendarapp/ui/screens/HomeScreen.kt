@@ -21,6 +21,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
@@ -36,6 +38,7 @@ import com.walele.footballcalendarapp.ui.components.CalendarView
 import com.walele.footballcalendarapp.ui.components.MatchList
 import com.walele.footballcalendarapp.ui.components.TopBar
 import com.walele.footballcalendarapp.ui.components.YearlyCalendarView
+import com.walele.footballcalendarapp.ui.theme.BackgroundGradient
 import com.walele.footballcalendarapp.ui.theme.BackgroundLight
 import com.walele.footballcalendarapp.ui.theme.GreenAccent
 import com.walele.footballcalendarapp.ui.theme.InterVariableFont
@@ -105,7 +108,7 @@ fun HomeScreen(
             gesturesEnabled = drawerState.isOpen,
             drawerContent = {
                 ModalDrawerSheet(
-                    drawerContainerColor = BackgroundLight
+                    drawerContainerColor = BackgroundGradient
                 ) {
                     Column(
                         modifier = Modifier
@@ -172,7 +175,15 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(BackgroundLight)
+                        .background(
+                            brush = Brush.linearGradient(
+                                colorStops = arrayOf(
+                                    0.0f to BackgroundLight,
+                                    0.75f to BackgroundLight,
+                                    1.0f to BackgroundGradient
+                                ),
+                            )
+                        )
                         .padding(WindowInsets.systemBars.only(WindowInsetsSides.Top).asPaddingValues())
                 ) {
                     Column(

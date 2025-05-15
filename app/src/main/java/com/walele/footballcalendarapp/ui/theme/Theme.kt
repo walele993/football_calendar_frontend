@@ -12,7 +12,8 @@ import androidx.compose.ui.text.font.FontWeight
 import com.walele.footballcalendar.R
 
 // Colori per il tema chiaro
-val BackgroundLight = Color(0xFFdad7cd) // Grigio chiarissimo, quasi bianco
+val BackgroundLight = Color(0xFFf4ede8) // Grigio chiarissimo, quasi bianco
+val BackgroundGradient = Color(0xFFDAD7CD)
 val PrimaryTextLight = Color(0xFF344e41) // Nero caldo
 val SecondaryTextLight = Color(0xFFa3b18a) // Grigio elegante
 
