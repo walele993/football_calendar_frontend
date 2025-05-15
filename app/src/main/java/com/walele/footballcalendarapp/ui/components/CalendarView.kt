@@ -9,34 +9,26 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.GenericShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 import java.time.YearMonth
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.geometry.Size
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
-import androidx.compose.runtime.remember
 import androidx.compose.ui.text.font.FontWeight
 import com.walele.footballcalendarapp.ui.theme.GreenAccent
 import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
-import com.walele.footballcalendarapp.ui.theme.OrangeAccent
+import com.walele.footballcalendarapp.ui.theme.PinkAccent
 import com.walele.footballcalendarapp.ui.theme.PrimaryTextLight
 import com.walele.footballcalendarapp.ui.theme.SecondaryTextLight
 import kotlin.math.sin
@@ -274,7 +266,7 @@ private fun DayCell(
                         },
                     ),
                     color = when {
-                        isToday -> OrangeAccent
+                        isToday -> PinkAccent
                         isSelected -> PrimaryTextLight
                         isCurrentMonth -> PrimaryTextLight
                         else -> SecondaryTextLight

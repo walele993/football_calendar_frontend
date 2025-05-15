@@ -12,22 +12,26 @@ import androidx.compose.ui.text.font.FontWeight
 import com.walele.footballcalendar.R
 
 // Colori per il tema chiaro
-val BackgroundLight = Color(0xFFf4ede8) // Grigio chiarissimo, quasi bianco
+val BackgroundLight = Color(0xFFf4ede8)
 val BackgroundGradient = Color(0xFFDAD7CD)
-val PrimaryTextLight = Color(0xFF344e41) // Nero caldo
-val SecondaryTextLight = Color(0xFFa3b18a) // Grigio elegante
+val PrimaryTextLight = Color(0xFF344e41)
+val SecondaryTextLight = Color(0xFFa3b18a)
 
-val GreenAccent = Color(0xFF588157) // Blu acceso stile iOS
-val OrangeAccent = Color(0xFFFF4D97) // Arancione energico
+val GreenAccent = Color(0xFF588157)
+val PinkAccent = Color(0xFFFF4D97)
 
 // Colori per il tema scuro
-val BackgroundDark = Color(0xFF121212) // Background scuro
-val PrimaryTextDark = Color(0xFFFFFFFF) // Testo chiaro
-val SecondaryTextDark = Color(0xFFB0B0B0) // Grigio chiaro
+val BackgroundDark = Color(0xFF1B1B1B)              // Sfondo principale, quasi nero ma non assoluto
+val BackgroundGradientDark = Color(0xFF2A2A2A)       // Variante per sfumature o pannelli
+val PrimaryTextDark = Color(0xFFECECEC)              // Testo principale molto chiaro
+val SecondaryTextDark = Color(0xFFB5C8A5)            // Testo secondario con un verde desaturato
+
+val GreenAccentDark = Color(0xFF7DA47A)              // Verde più morbido, leggibile su scuro
+val PinkAccentDark = Color(0xFFFF75B5)
 
 // Colori per il tema chiaro
 private val LightColors = lightColorScheme(
-    primary = OrangeAccent,
+    primary = PinkAccent,
     onPrimary = Color.White,
     secondary = GreenAccent,
     onSecondary = Color.White,
@@ -39,7 +43,7 @@ private val LightColors = lightColorScheme(
 
 // Colori per il tema scuro
 private val DarkColors = darkColorScheme(
-    primary = OrangeAccent,
+    primary = PinkAccent,
     onPrimary = Color.Black,
     secondary = GreenAccent,
     onSecondary = Color.Black,

@@ -1,6 +1,5 @@
 package com.walele.footballcalendarapp.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -15,9 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.walele.footballcalendarapp.ui.theme.InterVariableFont
 import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
-import com.walele.footballcalendarapp.ui.theme.OrangeAccent
+import com.walele.footballcalendarapp.ui.theme.PinkAccent
 import com.walele.footballcalendarapp.ui.theme.PrimaryTextLight
 import java.time.LocalDate
 import java.time.YearMonth
@@ -113,7 +111,7 @@ private fun MiniCalendarGrid(
                                     fontWeight = FontWeight.W400
                                 ),
                                 color = when {
-                                    isToday -> OrangeAccent
+                                    isToday -> PinkAccent
                                     else -> PrimaryTextLight
                                 }
                             )

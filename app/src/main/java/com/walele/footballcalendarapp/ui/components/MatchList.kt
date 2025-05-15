@@ -21,27 +21,15 @@ import com.walele.footballcalendarapp.data.Match
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.walele.footballcalendarapp.ui.theme.GreenAccent
 import com.walele.footballcalendarapp.ui.theme.InterVariableFont
 import com.walele.footballcalendarapp.ui.theme.OnestVariableFont
-import com.walele.footballcalendarapp.ui.theme.OrangeAccent
+import com.walele.footballcalendarapp.ui.theme.PinkAccent
 import com.walele.footballcalendarapp.ui.theme.SecondaryTextLight
 
 @Composable
@@ -215,7 +203,7 @@ fun MatchItemRow(match: Match, isLastItem: Boolean) {
                         fontFamily = InterVariableFont,
                         fontWeight = FontWeight.W400
                     ),
-                    color = OrangeAccent
+                    color = PinkAccent
                 )
             }
 
