@@ -21,12 +21,12 @@ val GreenAccent = Color(0xFF588157)
 val PinkAccent = Color(0xFFFF4D97)
 
 // Colori per il tema scuro
-val BackgroundDark = Color(0xFF1B1B1B)              // Sfondo principale, quasi nero ma non assoluto
-val BackgroundGradientDark = Color(0xFF2A2A2A)       // Variante per sfumature o pannelli
-val PrimaryTextDark = Color(0xFFECECEC)              // Testo principale molto chiaro
-val SecondaryTextDark = Color(0xFFB5C8A5)            // Testo secondario con un verde desaturato
+val BackgroundDark = Color(0xFF1B1B1B)
+val BackgroundGradientDark = Color(0xFF2A2A2A)
+val PrimaryTextDark = Color(0xFFECECEC)
+val SecondaryTextDark = Color(0xFFB5C8A5)
 
-val GreenAccentDark = Color(0xFF7DA47A)              // Verde più morbido, leggibile su scuro
+val GreenAccentDark = Color(0xFF7DA47A)
 val PinkAccentDark = Color(0xFFFF75B5)
 
 // Colori per il tema chiaro
